@@ -1,3 +1,15 @@
+local Keys = {
+    ["ESC"] = 322, ["F1"] = 288, ["F2"] = 289, ["F3"] = 170, ["F5"] = 166, ["F6"] = 167, ["F7"] = 168, ["F8"] = 169, ["F9"] = 56, ["F10"] = 57,
+    ["~"] = 243, ["1"] = 157, ["2"] = 158, ["3"] = 160, ["4"] = 164, ["5"] = 165, ["6"] = 159, ["7"] = 161, ["8"] = 162, ["9"] = 163, ["-"] = 84, ["="] = 83, ["BACKSPACE"] = 177,
+    ["TAB"] = 37, ["Q"] = 44, ["W"] = 32, ["E"] = 38, ["R"] = 45, ["T"] = 245, ["Y"] = 246, ["U"] = 303, ["P"] = 199, ["["] = 39, ["]"] = 40, ["ENTER"] = 18,
+    ["CAPS"] = 137, ["A"] = 34, ["S"] = 8, ["D"] = 9, ["F"] = 23, ["G"] = 47, ["H"] = 74, ["K"] = 311, ["L"] = 182,
+    ["LEFTSHIFT"] = 21, ["Z"] = 20, ["X"] = 73, ["C"] = 26, ["V"] = 0, ["B"] = 29, ["N"] = 249, ["M"] = 244, [","] = 82, ["."] = 81,
+    ["LEFTCTRL"] = 36, ["LEFTALT"] = 19, ["SPACE"] = 22, ["RIGHTCTRL"] = 70,
+    ["HOME"] = 213, ["PAGEUP"] = 10, ["PAGEDOWN"] = 11, ["DELETE"] = 178,
+    ["LEFT"] = 174, ["RIGHT"] = 175, ["TOP"] = 27, ["DOWN"] = 173,
+}
+
+
 QBCore = nil
 
 local HasKey = false
@@ -53,17 +65,21 @@ Citizen.CreateThread(function()
         if not HasKey and IsPedInAnyVehicle(ped, false) and GetPedInVehicleSeat(GetVehiclePedIsIn(ped, false), -1) == ped and QBCore ~= nil and not IsHotwiring then
             local veh = GetVehiclePedIsIn(ped, false)
             SetVehicleEngineOn(veh, false, false, true)
-            --[[local veh = GetVehiclePedIsIn(PlayerPedId(), false)
-            local vehpos = GetOffsetFromEntityInWorldCoords(veh, 0, 1.5, 0.5)
-            QBCore.Functions.DrawText3D(vehpos.x, vehpos.y, vehpos.z, "~g~H~w~ - Hotwire")
+	    local veh = GetVehiclePedIsIn(GetPlayerPed(-1), false)
+            local vehpos = GetOffsetFromEntityInWorldCoords(veh, 0.0, 2.0, 1.0)
+            QBCore.Functions.DrawText3D(vehpos.x, vehpos.y, vehpos.z, "[G] Search / [H] Hotwire" )
             SetVehicleEngineOn(veh, false, false, true)
 
-            if IsControlJustPressed(0, 74) then
+            if IsControlJustPressed(0, Keys["H"]) then
                 Hotwire()
-            end]]--
+            end
+
+            if IsControlJustPressed(1, Keys["G"]) then
+                Search()
+            end
         end
 
-        if IsControlJustPressed(1, 182) then
+        if IsControlJustPressed(1, Keys["L"]) then
             LockVehicle()
         end
     end
@@ -462,6 +478,50 @@ function LockpickIgnition(isAdvanced)
                 end)
             end
         end
+    end
+end
+
+function Search()
+    if not HasKey then 
+        local vehicle = GetVehiclePedIsIn(GetPlayerPed(-1), true)
+
+        if vehicleSearched[GetVehicleNumberPlateText(vehicle)] then
+            QBCore.Functions.Notify('You have already searched this vehicle.', "error")
+            return
+        end
+
+        vehicleSearched[GetVehicleNumberPlateText(vehicle)] = true
+        IsHotwiring = true
+        local searchTime = 5000
+	PoliceCall()
+        QBCore.Functions.Progressbar("searching_vehicle", "Searching", searchTime, false, true, {
+            disableMovement = true,
+            disableCarMovement = true,
+            disableMouse = false,
+            disableCombat = true,
+        }, {
+            animDict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@",
+            anim = "machinic_loop_mechandplayer",
+            flags = 16,
+        }, {}, {}, function() -- Done
+            StopAnimTask(GetPlayerPed(-1), "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1.0)
+            if (math.random(0, 100) < 10) then
+                HasKey = true
+                TriggerEvent("vehiclekeys:client:SetOwner", GetVehicleNumberPlateText(vehicle))
+                QBCore.Functions.Notify("You have found the keys to the vehicle!")
+                TriggerEvent("debug", 'Keys: Found', 'success')
+            else
+                HasKey = false
+                SetVehicleEngineOn(veh, false, false, true)
+            end
+            IsHotwiring = false
+        end, function() -- Cancel
+            TriggerEvent("debug", 'Keys: Canceled', 'error')
+            StopAnimTask(GetPlayerPed(-1), "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1.0)
+            HasKey = false
+            SetVehicleEngineOn(veh, false, false, true)
+            IsHotwiring = false
+        end)
     end
 end
 
