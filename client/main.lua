@@ -53,7 +53,7 @@ Citizen.CreateThread(function()
         if not HasKey and IsPedInAnyVehicle(ped, false) and GetPedInVehicleSeat(GetVehiclePedIsIn(ped, false), -1) == ped and QBCore ~= nil and not IsHotwiring then
             local veh = GetVehiclePedIsIn(ped, false)
             SetVehicleEngineOn(veh, false, false, true)
-	    local veh = GetVehiclePedIsIn(GetPlayerPed(-1), false)
+	    local veh = GetVehiclePedIsIn(ped, false)
             local vehpos = GetOffsetFromEntityInWorldCoords(veh, 0.0, 2.0, 1.0)
             QBCore.Functions.DrawText3D(vehpos.x, vehpos.y, vehpos.z, "[G] Search / [H] Hotwire" )
             SetVehicleEngineOn(veh, false, false, true)
