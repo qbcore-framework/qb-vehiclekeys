@@ -15,6 +15,5 @@ client_script {
 
 dependencies {
     'qb-core',
-    'qb-hud',
     'qb-skillbar'
 }
