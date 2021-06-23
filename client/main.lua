@@ -80,7 +80,7 @@ Citizen.CreateThread(function()
                 if driver ~= 0 and not IsPedAPlayer(driver) then
                     if IsEntityDead(driver) then
                         IsRobbing = true
-                        QBCore.Functions.Progressbar("rob_keys", "Grabing keysn..", 3000, false, true, {}, {}, {}, {}, function() -- Done
+                        QBCore.Functions.Progressbar("rob_keys", "Grabbing keys..", 3000, false, true, {}, {}, {}, {}, function() -- Done
                             TriggerEvent("vehiclekeys:client:SetOwner", GetVehicleNumberPlateText(vehicle))
                             HasKey = true
                             IsRobbing = false
@@ -212,9 +212,9 @@ function LockVehicle()
                         TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "lock", 0.3)
                         SetVehicleDoorsLocked(veh, 2)
                         if(GetVehicleDoorLockStatus(veh) == 2)then
-                            QBCore.Functions.Notify("Voertuig vergrendeld!")
+                            QBCore.Functions.Notify("Vehicle unlocked!")
                         else
-                            QBCore.Functions.Notify("Something went wrong whit the locking system!")
+                            QBCore.Functions.Notify("Something went wrong with the locking system!")
                         end
                     else
                         Citizen.Wait(750)
@@ -222,9 +222,9 @@ function LockVehicle()
                         TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "unlock", 0.3)
                         SetVehicleDoorsLocked(veh, 1)
                         if(GetVehicleDoorLockStatus(veh) == 1)then
-                            QBCore.Functions.Notify("Voertuig ontgrendeld!")
+                            QBCore.Functions.Notify("Vehicle unlocked!")
                         else
-                            QBCore.Functions.Notify("Something went wrong whit the locking system!")
+                            QBCore.Functions.Notify("Something went wrong with the locking system!")
                         end
                     end
         
@@ -246,7 +246,7 @@ function LockVehicle()
                     end
                 end
             else
-                QBCore.Functions.Notify('You dont have the keys of the vehicle..', 'error')
+                QBCore.Functions.Notify('You don\'t have the keys of the vehicle..', 'error')
             end
         end, plate)
     end
@@ -271,7 +271,7 @@ function LockpickDoor(isAdvanced)
                 IsHotwiring = true
                 SetVehicleAlarm(vehicle, true)
                 SetVehicleAlarmTimeLeft(vehicle, lockpickTime)
-                QBCore.Functions.Progressbar("lockpick_vehicledoor", "breaking the door open..", lockpickTime, false, true, {
+                QBCore.Functions.Progressbar("lockpick_vehicledoor", "Breaking the door open..", lockpickTime, false, true, {
                     disableMovement = true,
                     disableCarMovement = true,
                     disableMouse = false,
@@ -532,7 +532,7 @@ function PoliceCall()
                         Name = "Unknown"
                     end
                     local modelPlate = GetVehicleNumberPlateText(vehicle)
-                    local msg = "Vehicle theft attempt at " ..streetLabel.. ". Vehicle: " .. Name .. ", Licensplate: " .. modelPlate
+                    local msg = "Vehicle theft attempt at " ..streetLabel.. ". Vehicle: " .. Name .. ", Licenseplate: " .. modelPlate
                     local alertTitle = "Vehicle theft attempt at"
                     TriggerServerEvent("police:server:VehicleCall", pos, msg, alertTitle, streetLabel, modelPlate, Name)
                 else
@@ -544,7 +544,7 @@ function PoliceCall()
                     else
                         Name = "Unknown"
                     end
-                    local msg = "Vehicle theft attempt at " ..streetLabel.. ". Vehicle: " .. Name .. ", Licenceplate: " .. modelPlate
+                    local msg = "Vehicle theft attempt at " ..streetLabel.. ". Vehicle: " .. Name .. ", Licenseplate: " .. modelPlate
                     local alertTitle = "Vehicle theft attempt at"
                     TriggerServerEvent("police:server:VehicleCall", pos, msg, alertTitle, streetLabel, modelPlate, Name)
                 end
