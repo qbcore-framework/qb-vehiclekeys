@@ -23,6 +23,7 @@ Citizen.CreateThread(function()
 
         if QBCore ~= nil then
             local ped = PlayerPedId()
+	    local vehicle = GetVehiclePedIsIn(ped)
             if IsPedInAnyVehicle(ped, false) and GetPedInVehicleSeat(GetVehiclePedIsIn(ped, true), -1) == ped then
                 local plate = GetVehicleNumberPlateText(GetVehiclePedIsIn(ped, true))
                 if LastVehicle ~= GetVehiclePedIsIn(ped, false) then
@@ -65,6 +66,10 @@ Citizen.CreateThread(function()
 
         if IsControlJustPressed(1, 182) then
             LockVehicle()
+        end
+			
+	if (GetVehicleDoorLockStatus(vehicle) == 2) then
+            DisableControlAction(1, 75, true)
         end
     end
 end)
