@@ -217,7 +217,7 @@ function LockVehicle()
                         TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "lock", 0.3)
                         SetVehicleDoorsLocked(veh, 2)
                         if(GetVehicleDoorLockStatus(veh) == 2)then
-                            QBCore.Functions.Notify("Vehicle unlocked!")
+                            QBCore.Functions.Notify("Vehicle locked!")
                         else
                             QBCore.Functions.Notify("Something went wrong with the locking system!")
                         end
