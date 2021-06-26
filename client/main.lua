@@ -455,6 +455,11 @@ function LockpickIgnition(isAdvanced)
                         StopAnimTask(ped, "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1.0)
                         HasKey = false
                         SetVehicleEngineOn(vehicle, false, false, true)
+			if isAdvanced then
+			    TriggerServerEvent("QBCore:Server:RemoveItem", "advancedlockpick", 1)
+			else
+			    TriggerServerEvent("QBCore:Server:RemoveItem", "lockpick", 1)
+			end
                         QBCore.Functions.Notify("Lockpicking failed!", "error")
                         IsHotwiring = false
                         FailedAttemps = FailedAttemps + 1
