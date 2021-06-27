@@ -456,7 +456,7 @@ function LockpickIgnition(isAdvanced)
                         HasKey = false
                         SetVehicleEngineOn(vehicle, false, false, true)
 			local randChance = math.random(1,5)
-			if randChance == 3
+			if randChance == 3 then
 				if isAdvanced then
 				    TriggerServerEvent("QBCore:Server:RemoveItem", "advancedlockpick", 1)
 				else
