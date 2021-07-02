@@ -1,5 +1,3 @@
-QBCore = nil
-
 local HasKey = false
 local LastVehicle = nil
 local IsHotwiring = false
@@ -9,13 +7,6 @@ local NeededAttempts = 0
 local SucceededAttempts = 0
 local FailedAttemps = 0
 local AlertSend = false
-
-Citizen.CreateThread(function() 
-    while QBCore == nil do
-        TriggerEvent("QBCore:GetObject", function(obj) QBCore = obj end)    
-        Citizen.Wait(200)
-    end
-end)
 
 Citizen.CreateThread(function()
     while true do

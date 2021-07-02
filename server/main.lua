@@ -1,6 +1,3 @@
-QBCore = nil
-TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
-
 local VehicleList = {}
 
 QBCore.Functions.CreateCallback('vehiclekeys:CheckHasKey', function(source, cb, plate)
