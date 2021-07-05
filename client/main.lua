@@ -21,10 +21,10 @@ Citizen.CreateThread(function()
                     QBCore.Functions.TriggerCallback('vehiclekeys:CheckHasKey', function(result)
                         if result then
                             HasKey = true
-                            SetVehicleEngineOn(veh, true, false, true)
+                            SetVehicleEngineOn(vehicle, true, false, true)
                         else
                             HasKey = false
-                            SetVehicleEngineOn(veh, false, false, true)
+                            SetVehicleEngineOn(vehicle, false, false, true)
                         end
                         LastVehicle = GetVehiclePedIsIn(ped, false)
                     end, plate)
