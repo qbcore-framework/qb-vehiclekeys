@@ -529,9 +529,9 @@ function PoliceCall()
                 local alertTitle = ""
                 if IsPedInAnyVehicle(ped) then
                     local vehicle = GetVehiclePedIsIn(ped, false)
-                    local modelName = GetEntityModel(vehicle)
-                    if QBCore.Shared.VehicleModels[modelName] ~= nil then
-                        Name = QBCore.Shared.Vehicles[QBCore.Shared.VehicleModels[modelName]["model"]]["brand"] .. ' ' .. QBCore.Shared.Vehicles[QBCore.Shared.VehicleModels[modelName]["model"]]["name"]
+                    local modelName = GetDisplayNameFromVehicleModel(GetEntityModel(vehicle)):lower()
+                    if QBCore.Shared.Vehicles[modelName] ~= nil then
+                        Name = QBCore.Shared.Vehicles[modelName]["model"]["brand"] .. ' ' .. QBCore.Shared.Vehicles[modelName]["model"]["name"]
                     else
                         Name = "Unknown"
                     end
@@ -541,10 +541,10 @@ function PoliceCall()
                     TriggerServerEvent("police:server:VehicleCall", pos, msg, alertTitle, streetLabel, modelPlate, Name)
                 else
                     local vehicle = QBCore.Functions.GetClosestVehicle()
-                    local modelName = GetEntityModel(vehicle)
+                    local modelName = GetDisplayNameFromVehicleModel(GetEntityModel(vehicle)):lower()
                     local modelPlate = GetVehicleNumberPlateText(vehicle)
-                    if QBCore.Shared.VehicleModels[modelName] ~= nil then
-                        Name = QBCore.Shared.Vehicles[QBCore.Shared.VehicleModels[modelName]["model"]]["brand"] .. ' ' .. QBCore.Shared.Vehicles[QBCore.Shared.VehicleModels[modelName]["model"]]["name"]
+                    if QBCore.Shared.Vehicles[modelName] ~= nil then
+                        Name = QBCore.Shared.Vehicles[modelName]["model"]["brand"] .. ' ' .. QBCore.Shared.Vehicles[modelName]["model"]["name"]
                     else
                         Name = "Unknown"
                     end
