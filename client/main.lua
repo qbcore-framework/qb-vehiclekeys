@@ -54,15 +54,16 @@ Citizen.CreateThread(function()
                 Hotwire()
             end]]--
         end
-
-        if IsControlJustPressed(1, 182) then
-            LockVehicle()
-        end
 			
 	if (GetVehicleDoorLockStatus(vehicle) == 2) then
             DisableControlAction(1, 75, true)
         end
     end
+end)
+
+RegisterKeyMapping('togglelocks', 'Toggle Vehicle Locks', 'keyboard', 'L')
+RegisterCommand('togglelocks', function()
+    LockVehicle()
 end)
 
 Citizen.CreateThread(function()
