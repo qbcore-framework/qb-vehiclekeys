@@ -384,7 +384,7 @@ function LockpickIgnition(isAdvanced)
                             FailedAttemps = 0
                             SucceededAttempts = 0
                             NeededAttempts = 0
-                            TriggerServerEvent('qb-hud:Server:GainStress', math.random(2, 4))
+                            TriggerServerEvent('hud:server:GainStress', math.random(2, 4))
                         else
                             if vehicle ~= nil and vehicle ~= 0 then
                                 TaskPlayAnim(ped, dict, anim, 8.0, 8.0, -1, 16, -1, false, false, false)
@@ -436,7 +436,7 @@ function LockpickIgnition(isAdvanced)
                                 local c = math.random(2)
                                 local o = math.random(2)
                                 if c == o then
-                                    TriggerServerEvent('qb-hud:Server:GainStress', math.random(1, 4))
+                                    TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
                                 end
                             end
                         end
@@ -460,7 +460,7 @@ function LockpickIgnition(isAdvanced)
                         local c = math.random(2)
                         local o = math.random(2)
                         if c == o then
-                            TriggerServerEvent('qb-hud:Server:GainStress', math.random(1, 4))
+                            TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
                         end
                     end
                 end)
