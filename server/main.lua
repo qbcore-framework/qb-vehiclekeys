@@ -53,7 +53,7 @@ end)
 
 QBCore.Commands.Add("engine", "Toggle Engine", {}, false, function(source, args)
 	TriggerClientEvent('vehiclekeys:client:ToggleEngine', source)
-end)
+end,"god") --Dont let anyone use this command
 
 QBCore.Commands.Add("givecarkeys", "Give Car Keys", {{name = "id", help = "Player id"}}, true, function(source, args)
 	local src = source
