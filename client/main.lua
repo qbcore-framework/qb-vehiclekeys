@@ -66,6 +66,16 @@ RegisterCommand('togglelocks', function()
     LockVehicle()
 end)
 
+RegisterKeyMapping('hotwire', 'Hotwire Vehicle', 'keyboard', 'H')
+RegisterCommand('hotwire', function()
+    Hotwire()
+end)
+
+RegisterKeyMapping('search', 'Search Vehicle Key', 'keyboard', 'G')
+RegisterCommand('search', function()
+    Search()
+end)
+
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(7)
@@ -508,6 +518,49 @@ function Hotwire()
         end)
     end
 end
+
+function Search()
+    if not HasKey then 
+        local ped = PlayerPedId()
+        local vehicle = GetVehiclePedIsIn(ped, true)
+
+        if vehicleSearched[GetVehicleNumberPlateText(vehicle)] then
+            QBCore.Functions.Notify('you alraday search here', "error")
+            return
+        end
+
+        vehicleSearched[GetVehicleNumberPlateText(vehicle)] = true
+        IsHotwiring = true
+        local searchTime = 5000
+        QBCore.Functions.Progressbar("searching_vehicle", "searching", searchTime, false, true, {
+            disableMovement = true,
+            disableCarMovement = true,
+            disableMouse = false,
+            disableCombat = true,
+        }, {
+            animDict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@",
+            anim = "machinic_loop_mechandplayer",
+            flags = 16,
+        }, {}, {}, function() -- Done
+            StopAnimTask(ped, "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1.0)
+            if (math.random(0, 100) < 10) then
+                HasKey = true
+                TriggerEvent("vehiclekeys:client:SetOwner", GetVehicleNumberPlateText(vehicle))
+                QBCore.Functions.Notify("you found vehicle key")
+            else
+                HasKey = false
+                SetVehicleEngineOn(veh, false, false, true)
+            end
+            IsHotwiring = false
+        end, function() -- Cancel
+            StopAnimTask(ped, "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1.0)
+            HasKey = false
+            SetVehicleEngineOn(veh, false, false, true)
+            IsHotwiring = false
+        end)
+    end
+end
+
 
 function PoliceCall()
     if not AlertSend then
