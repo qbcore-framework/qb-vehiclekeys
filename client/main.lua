@@ -132,10 +132,52 @@ AddEventHandler('vehiclekeys:client:SetOwner', function(plate)
 end)
 
 RegisterNetEvent('vehiclekeys:client:GiveKeys')
-AddEventHandler('vehiclekeys:client:GiveKeys', function(target)
-    local plate = GetVehicleNumberPlateText(GetVehiclePedIsIn(PlayerPedId(), true))
-    TriggerServerEvent('vehiclekeys:server:GiveVehicleKeys', plate, target)
+AddEventHandler('vehiclekeys:client:GiveKeys', function()
+    local coordA = GetEntityCoords(PlayerPedId(), 1)
+    local coordB = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 100.0, 0.0)
+    local latestveh = getVehicleInDirection(coordA, coordB)
+    
+    if latestveh == nil or not DoesEntityExist(latestveh) then
+        QBCore.Functions.Notify("Vehicle not found!", 'error')
+        return
+    end
+    
+    QBCore.Functions.TriggerCallback('vehiclekeys:CheckHasKey', function(hasKey)
+        if not hasKey then
+            QBCore.Functions.Notify("No keys for target vehicle!", 'error')
+            return
+        end
+
+        if #(GetEntityCoords(latestveh) - GetEntityCoords(PlayerPedId(), 0)) > 5 then
+            QBCore.Functions.Notify("You are too far away from the vehicle!", 'error')
+            return
+        end
+        
+        t, distance = QBCore.Functions.GetClosestPlayer()
+        if(distance ~= -1 and distance < 5) then
+            TriggerServerEvent('vehiclekeys:server:GiveVehicleKeys', GetVehicleNumberPlateText(latestveh), GetPlayerServerId(t))
+        else
+            QBCore.Functions.Notify("No player near you!", 'error')
+        end
+    end, GetVehicleNumberPlateText(latestveh))
 end)
+
+function getVehicleInDirection(coordFrom, coordTo)
+	local offset = 0
+	local rayHandle
+	local vehicle
+  
+for i = 0, 100 do
+	rayHandle = CastRayPointToPoint(coordFrom.x, coordFrom.y, coordFrom.z, coordTo.x, coordTo.y, coordTo.z + offset, 10, PlayerPedId(), 0) 
+	a, b, c, d, vehicle = GetRaycastResult(rayHandle)
+	offset = offset - 1
+	if vehicle ~= 0 then break end
+end
+	
+local distance = Vdist2(coordFrom, GetEntityCoords(vehicle))
+if distance > 25 then vehicle = nil end
+	return vehicle ~= nil and vehicle or 0
+end
 
 RegisterNetEvent('vehiclekeys:client:ToggleEngine')
 AddEventHandler('vehiclekeys:client:ToggleEngine', function()
