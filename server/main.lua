@@ -41,10 +41,10 @@ AddEventHandler('vehiclekeys:server:GiveVehicleKeys', function(plate, target)
     if CheckOwner(plate, Player.PlayerData.citizenid) then
         if QBCore.Functions.GetPlayer(target) ~= nil then
             TriggerClientEvent('vehiclekeys:client:SetOwner', target, plate)
-            TriggerClientEvent('QBCore:Notify', src, "You gave the keys!")
-            TriggerClientEvent('QBCore:Notify', target, "You got the keys!")
+            TriggerClientEvent('QBCore:Notify', src, "You just gave keys to your vehicles!")
+            TriggerClientEvent('QBCore:Notify', target, "You just received keys to a vehicle!")
         else
-            TriggerClientEvent('QBCore:Notify', source,  "Player Not Online", "error")
+	TriggerClientEvent('QBCore:Notify', source,  "Player Not Online", "error")
         end
     else
         TriggerClientEvent('QBCore:Notify', source,  "You Dont Own This Vehicle", "error")
