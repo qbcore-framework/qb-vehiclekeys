@@ -185,62 +185,57 @@ end
 
 function LockVehicle()
     local ped = PlayerPedId()
-    local veh = QBCore.Functions.GetClosestVehicle()
-    local coordA = GetEntityCoords(ped, true)
-    local coordB = GetOffsetFromEntityInWorldCoords(ped, 0.0, 255.0, 0.0)
-    local veh = GetClosestVehicleInDirection(coordA, coordB)
-    local pos = GetEntityCoords(ped, true)
+    local pos = GetEntityCoords(ped)
+    local veh = QBCore.Functions.GetClosestVehicle(pos)
+    local plate = GetVehicleNumberPlateText(veh)
+    local vehpos = GetEntityCoords(veh)
     if IsPedInAnyVehicle(ped) then
         veh = GetVehiclePedIsIn(ped)
     end
-    local plate = GetVehicleNumberPlateText(veh)
-    local vehpos = GetEntityCoords(veh, false)
     if veh ~= nil and #(pos - vehpos) < 7.5 then
         QBCore.Functions.TriggerCallback('vehiclekeys:CheckHasKey', function(result)
             if result then
-                if HasKey then
-                    local vehLockStatus = GetVehicleDoorLockStatus(veh)
-                    loadAnimDict("anim@mp_player_intmenu@key_fob@")
-                    TaskPlayAnim(ped, 'anim@mp_player_intmenu@key_fob@', 'fob_click' ,3.0, 3.0, -1, 49, 0, false, false, false)
-        
-                    if vehLockStatus == 1 then
-                        Citizen.Wait(750)
-                        ClearPedTasks(ped)
-                        TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "lock", 0.3)
-                        SetVehicleDoorsLocked(veh, 2)
-                        if(GetVehicleDoorLockStatus(veh) == 2)then
-                            QBCore.Functions.Notify("Vehicle locked!")
-                        else
-                            QBCore.Functions.Notify("Something went wrong with the locking system!")
-                        end
+                local vehLockStatus = GetVehicleDoorLockStatus(veh)
+                loadAnimDict("anim@mp_player_intmenu@key_fob@")
+                TaskPlayAnim(ped, 'anim@mp_player_intmenu@key_fob@', 'fob_click' ,3.0, 3.0, -1, 49, 0, false, false, false)
+    
+                if vehLockStatus == 1 then
+                    Citizen.Wait(750)
+                    ClearPedTasks(ped)
+                    TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "lock", 0.3)
+                    SetVehicleDoorsLocked(veh, 2)
+                    if(GetVehicleDoorLockStatus(veh) == 2)then
+                        QBCore.Functions.Notify("Vehicle locked!")
                     else
-                        Citizen.Wait(750)
-                        ClearPedTasks(ped)
-                        TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "unlock", 0.3)
-                        SetVehicleDoorsLocked(veh, 1)
-                        if(GetVehicleDoorLockStatus(veh) == 1)then
-                            QBCore.Functions.Notify("Vehicle unlocked!")
-                        else
-                            QBCore.Functions.Notify("Something went wrong with the locking system!")
-                        end
+                        QBCore.Functions.Notify("Something went wrong with the locking system!")
                     end
-        
-                    if not IsPedInAnyVehicle(ped) then
-                        SetVehicleInteriorlight(veh, true)
-                        SetVehicleIndicatorLights(veh, 0, true)
-                        SetVehicleIndicatorLights(veh, 1, true)
-                        Citizen.Wait(450)
-                        SetVehicleIndicatorLights(veh, 0, false)
-                        SetVehicleIndicatorLights(veh, 1, false)
-                        Citizen.Wait(450)
-                        SetVehicleInteriorlight(veh, true)
-                        SetVehicleIndicatorLights(veh, 0, true)
-                        SetVehicleIndicatorLights(veh, 1, true)
-                        Citizen.Wait(450)
-                        SetVehicleInteriorlight(veh, false)
-                        SetVehicleIndicatorLights(veh, 0, false)
-                        SetVehicleIndicatorLights(veh, 1, false)
+                else
+                    Citizen.Wait(750)
+                    ClearPedTasks(ped)
+                    TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "unlock", 0.3)
+                    SetVehicleDoorsLocked(veh, 1)
+                    if(GetVehicleDoorLockStatus(veh) == 1)then
+                        QBCore.Functions.Notify("Vehicle unlocked!")
+                    else
+                        QBCore.Functions.Notify("Something went wrong with the locking system!")
                     end
+                end
+    
+                if not IsPedInAnyVehicle(ped) then
+                    SetVehicleInteriorlight(veh, true)
+                    SetVehicleIndicatorLights(veh, 0, true)
+                    SetVehicleIndicatorLights(veh, 1, true)
+                    Citizen.Wait(450)
+                    SetVehicleIndicatorLights(veh, 0, false)
+                    SetVehicleIndicatorLights(veh, 1, false)
+                    Citizen.Wait(450)
+                    SetVehicleInteriorlight(veh, true)
+                    SetVehicleIndicatorLights(veh, 0, true)
+                    SetVehicleIndicatorLights(veh, 1, true)
+                    Citizen.Wait(450)
+                    SetVehicleInteriorlight(veh, false)
+                    SetVehicleIndicatorLights(veh, 0, false)
+                    SetVehicleIndicatorLights(veh, 1, false)
                 end
             else
                 QBCore.Functions.Notify('You don\'t have the keys of the vehicle..', 'error')
@@ -560,27 +555,6 @@ function PoliceCall()
             AlertSend = false
         end)
     end
-end
-
-function GetClosestVehicleInDirection(coordFrom, coordTo)
-	local offset = 0
-	local rayHandle
-	local vehicle
-
-	for i = 0, 100 do
-		rayHandle = CastRayPointToPoint(coordFrom.x, coordFrom.y, coordFrom.z, coordTo.x, coordTo.y, coordTo.z + offset, 10, PlayerPedId(), 0)	
-		a, b, c, d, vehicle = GetRaycastResult(rayHandle)
-		
-		offset = offset - 1
-
-		if vehicle ~= 0 then break end
-	end
-	
-	local distance = Vdist2(coordFrom, GetEntityCoords(vehicle))
-	
-	if distance > 250 then vehicle = nil end
-
-    return vehicle ~= nil and vehicle or 0
 end
 
 function GetNearbyPed()
