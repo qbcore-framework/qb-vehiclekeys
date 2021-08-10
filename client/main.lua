@@ -1,12 +1,6 @@
-local HasKey = false
 local LastVehicle = nil
-local IsHotwiring = false
-local IsRobbing = false
-local isLoggedIn = false
-local NeededAttempts = 0
-local SucceededAttempts = 0
-local FailedAttemps = 0
-local AlertSend = false
+local HasKey, IsHotwiring, IsRobbing, isLoggedIn, AlertSend = false, false, false, false, false
+local NeededAttempts, SucceededAttempts, FailedAttemps = 0, 0, 0
 
 Citizen.CreateThread(function()
     while true do
@@ -85,7 +79,7 @@ Citizen.CreateThread(function()
                     end
                 end
             end
-
+		-- fix this code and complete please delete this
             --[[if QBCore.Functions.GetPlayerData().job.name ~= "police" then
                 local aiming, target = GetEntityPlayerIsFreeAimingAt(PlayerId())
                 if aiming and (target ~= nil and target ~= 0) then
@@ -105,6 +99,76 @@ Citizen.CreateThread(function()
             end]]--
         end
     end
+end)
+
+local hasBeenUnlocked = {}
+
+Citizen.CreateThread(function()
+    while true do
+	Citizen.Wait(5)
+   
+	if not IsPedInAnyVehicle(PlayerPedId(), false) then
+		local aiming, targetPed = GetEntityPlayerIsFreeAimingAt(PlayerId(-1))
+		if aiming then
+			if DoesEntityExist(targetPed) and not IsPedAPlayer(targetPed) and IsPedArmed(PlayerPedId(), 7) and IsPedInAnyVehicle(targetPed, false) then
+				local vehicle = GetVehiclePedIsIn(targetPed, false)
+				local plate = GetVehicleNumberPlateText(vehicle)
+				local distance = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId(), true), GetEntityCoords(vehicle, true), false)
+   
+				if distance < 10 and IsPedFacingPed(targetPed, PlayerPedId(), 60.0) then
+					SetVehicleForwardSpeed(vehicle, 0)
+					hasBeenUnlocked[plate] = false
+					SetVehicleForwardSpeed(vehicle, 0)
+					TaskLeaveVehicle(targetPed, vehicle, 256)
+		   
+							while IsPedInAnyVehicle(targetPed, false) do
+							 Citizen.Wait(5)
+							end
+			   
+							RequestAnimDict('missfbi5ig_22')
+							RequestAnimDict('mp_common')
+							SetPedDropsWeaponsWhenDead(targetPed,false)
+							ClearPedTasks(targetPed)
+							TaskTurnPedToFaceEntity(targetPed, PlayerPedId(), 3.0)
+							TaskSetBlockingOfNonTemporaryEvents(targetPed, true)
+							SetPedFleeAttributes(targetPed, 0, 0)
+							SetPedCombatAttributes(targetPed, 17, 1)
+							SetPedSeeingRange(targetPed, 0.0)
+							SetPedHearingRange(targetPed, 0.0)
+							SetPedAlertness(targetPed, 0)
+							SetPedKeepTask(targetPed, true)
+				   
+							TaskPlayAnim(targetPed, "missfbi5ig_22", "hands_up_anxious_scientist", 8.0, -8, -1, 12, 1, 0, 0, 0)
+							Wait(1500)
+							TaskPlayAnim(targetPed, "missfbi5ig_22", "hands_up_anxious_scientist", 8.0, -8, -1, 12, 1, 0, 0, 0)
+							Wait(2500)
+   
+					local distance = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId(), true), GetEntityCoords(vehicle, true), false)
+
+					if not IsEntityDead(targetPed) and distance < 12 then
+						hasBeenUnlocked[plate] = true
+						TaskPlayAnim(targetPed, "mp_common", "givetake1_a", 8.0, -8, -1, 12, 1, 0, 0, 0)
+						Wait(750)
+						QBCore.Functions.Notify('received the car keys', 'success')
+						TriggerEvent("vehiclekeys:client:SetOwner", GetVehicleNumberPlateText(vehicle))
+						Citizen.Wait(500)
+						TaskReactAndFleePed(targetPed, PlayerPedId())
+						SetPedKeepTask(targetPed, true)
+						Wait(2500)
+						TaskReactAndFleePed(targetPed, PlayerPedId())
+						SetPedKeepTask(targetPed, true)
+						Wait(2500)
+						TaskReactAndFleePed(targetPed, PlayerPedId())
+						SetPedKeepTask(targetPed, true)
+						Wait(2500)
+						TaskReactAndFleePed(targetPed, PlayerPedId())
+						SetPedKeepTask(targetPed, true)
+						end
+					end
+				end
+			end
+		end
+	end
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
