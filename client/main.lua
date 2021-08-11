@@ -4,25 +4,36 @@ local IsRobbing = false
 local isLoggedIn = false
 local AlertSend = false
 local lockpicked = false
+local PlayerData = {}
+
+-- Events
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+    PlayerData = QBCore.Functions.GetPlayerData()
     isLoggedIn = true
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerUnload')
 AddEventHandler('QBCore:Client:OnPlayerUnload', function()
     isLoggedIn = false
+    PlayerData = {}
+end)
+
+RegisterNetEvent('QBCore:Client:OnJobUpdate')
+AddEventHandler('QBCore:Client:OnJobUpdate', function(JobInfo)
+    PlayerData.job = JobInfo
 end)
 
 RegisterNetEvent('vehiclekeys:client:SetOwner')
 AddEventHandler('vehiclekeys:client:SetOwner', function(plate)
     local VehPlate = plate
+    local CurrentVehPlate = GetVehicleNumberPlateText(GetVehiclePedIsIn(PlayerPedId(), true))
     if VehPlate == nil then
-        VehPlate = GetVehicleNumberPlateText(GetVehiclePedIsIn(PlayerPedId(), true))
+        VehPlate = CurrentVehPlate
     end
     TriggerServerEvent('vehiclekeys:server:SetVehicleOwner', VehPlate)
-    if IsPedInAnyVehicle(PlayerPedId()) and plate == GetVehicleNumberPlateText(GetVehiclePedIsIn(PlayerPedId(), true)) then
+    if IsPedInAnyVehicle(PlayerPedId()) and plate == CurrentVehPlate then
         SetVehicleEngineOn(GetVehiclePedIsIn(PlayerPedId(), true), true, false, true)
     end
     HasKey = true
@@ -47,49 +58,78 @@ AddEventHandler('vehiclekeys:client:ToggleEngine', function()
     end
 end)
 
+-- This event is to prevent you from having to /logout after restarting the vehiclekeys, will only trigger when the resource gets restarted manually or by the server, not client-side, client-side has it's own event: onClientResourceStart
+
+AddEventHandler('onResourceStart', function(resource)
+    if resource == GetCurrentResourceName() then
+        Wait(100)
+        PlayerData = QBCore.Functions.GetPlayerData()
+        isLoggedIn = true
+    end
+end)
+
 -- Main Thread
 
 CreateThread(function()
     while true do
-        sleep = 100
-        local ped = PlayerPedId()
-        local veh = GetVehiclePedIsIn(ped)
-        local entering = GetVehiclePedIsTryingToEnter(ped)
-        local plate = GetVehicleNumberPlateText(entering)
+        local sleep = 100
+        if isLoggedIn then
+            local ped = PlayerPedId()
+            local veh = GetVehiclePedIsIn(ped)
+            local inVeh = IsPedInAnyVehicle(ped, true)
+            local entering = GetVehiclePedIsTryingToEnter(ped)
+            local plate = GetVehicleNumberPlateText(entering)
 
-        if entering ~= 0 and IsVehicleSeatFree(entering, -1) then
-            if not lockpicked then
-                QBCore.Functions.TriggerCallback('vehiclekeys:CheckHasKey', function(result)
-                    if result == false then
-                        SetVehicleDoorsLocked(entering, 2)
-                    else
-                        HasKey = true
+            if entering ~= 0 and IsVehicleSeatFree(entering, -1) then
+                if not lockpicked then
+                    QBCore.Functions.TriggerCallback('vehiclekeys:CheckHasKey', function(result)
+                        if result == false then
+                            SetVehicleDoorsLocked(entering, 2)
+                        else
+                            HasKey = true
+                        end
+                    end, plate)
+                end
+            end
+
+            if inVeh and lockpicked and not IsHotwiring and not HasKey then
+                sleep = 10
+                local vehpos = GetEntityCoords(veh)
+                SetVehicleEngineOn(veh, false, false, true)
+                DrawText3D(vehpos.x, vehpos.y, vehpos.z, "~g~H~w~ - Hotwire")
+                if IsControlJustPressed(0, 74) then
+                    Hotwire()
+                end
+            end
+
+            if not IsRobbing then
+                local vehicle = GetVehiclePedIsTryingToEnter(ped)
+                if vehicle ~= nil and vehicle ~= 0 then
+                    local driver = GetPedInVehicleSeat(vehicle, -1)
+                    if driver ~= 0 and not IsPedAPlayer(driver) then
+                        if IsEntityDead(driver) then
+                            IsRobbing = true
+                            QBCore.Functions.Progressbar("rob_keys", "Grabbing keys..", 2500, false, true, {}, {}, {}, {}, function() -- Done
+                                TriggerEvent("vehiclekeys:client:SetOwner", GetVehicleNumberPlateText(vehicle))
+                                HasKey = true
+                                IsRobbing = false
+                            end)
+                        end
                     end
-                end, plate)
-            end
-        end
-
-        if IsPedInAnyVehicle(ped, true) and lockpicked and not IsHotwiring and not HasKey then
-            sleep = 10
-            local vehpos = GetEntityCoords(veh)
-            SetVehicleEngineOn(veh, false, false, true)
-            DrawText3D(vehpos.x, vehpos.y, vehpos.z, "~g~H~w~ - Hotwire")
-            if IsControlJustPressed(0, 74) then
-                Hotwire()
-            end
-        end
-
-        if not IsRobbing then
-            local aiming, target = GetEntityPlayerIsFreeAimingAt(PlayerId())
-            if aiming and (target ~= nil and target ~= 0) then
-                if DoesEntityExist(target) and not IsPedAPlayer(target) then
-                    if IsPedInAnyVehicle(target, false) and not IsPedInAnyVehicle(PlayerPedId(), false) then
-                        if not IsBlacklistedWeapon() then
-                            local pos = GetEntityCoords(PlayerPedId(), true)
-                            local targetpos = GetEntityCoords(target, true)
-                            local vehicle = GetVehiclePedIsIn(target, true)
-                            if #(pos - targetpos) < 13.0 then
-                                RobVehicle(target)
+                end
+    
+                local playerid = PlayerId()
+                local aiming, target = GetEntityPlayerIsFreeAimingAt(playerid)
+                if aiming and (target ~= nil and target ~= 0) and PlayerData.job.name ~= 'police' then
+                    if DoesEntityExist(target) and not IsEntityDead(target) and not IsPedAPlayer(target) then
+                        if IsPedInAnyVehicle(target, false) and not inVeh then
+                            if not IsBlacklistedWeapon() then
+                                local pos = GetEntityCoords(ped, true)
+                                local targetpos = GetEntityCoords(target, true)
+                                local vehicle = GetVehiclePedIsIn(target, true)
+                                if #(pos - targetpos) < 5.0 then
+                                    RobVehicle(target)
+                                end
                             end
                         end
                     end
@@ -366,7 +406,7 @@ function IsBlacklistedWeapon()
 end
 
 function DrawText3D(x, y, z, text)
-	SetTextScale(0.35, 0.35)
+    SetTextScale(0.35, 0.35)
     SetTextFont(4)
     SetTextProportional(1)
     SetTextColour(255, 255, 255, 215)
