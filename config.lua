@@ -30,3 +30,6 @@ Config.NoRobWeapons = {
     "WEAPON_Snowball",
     "WEAPON_SmokeGrenade",
 }
+
+-- The roll is based on 1-100, by default if it rolls 55 or above police are called.
+Config.policeCallChance = 55;

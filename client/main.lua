@@ -348,22 +348,30 @@ function RobVehicle(target)
     TaskPlayAnim(target, "mp_am_hold_up", "holdup_victim_20s", 8.0, -8.0, -1, 2, 0, false, false, false)
     QBCore.Functions.Progressbar("rob_keys", "Attemping Robbery..", 6000, false, true, {}, {}, {}, {}, function()
         local chance = math.random(1, 100)
-        if chance > 85 then
-            ClearPedTasksImmediately(target)
-            TaskLeaveVehicle(target, GetVehiclePedIsUsing(target), 256)
-            TaskSmartFleePed(target, PlayerPedId(), 40.0, 20000)
-            local plate = GetVehicleNumberPlateText(GetVehiclePedIsIn(target, true))
-            IsRobbing = false
-            TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
-            TriggerEvent('vehiclekeys:client:SetOwner', plate)
-            QBCore.Functions.Notify('You Got The Keys!', 'success')
-        else
+        if chance > Config.policeCallChance then
             PoliceCall()
             TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
             TaskSmartFleePed(target, PlayerPedId(), 40.0, 20000)
             QBCore.Functions.Notify('They Called The Cops!', 'error')
             Wait(2000)
             IsRobbing = false
+        else
+            local plate = GetVehicleNumberPlateText(GetVehiclePedIsIn(target, true)) -- Fetch vehicle plate
+            Citizen.Wait(0) -- idk if this is redundant
+            TaskLeaveVehicle(target, GetVehiclePedIsUsing(target), 256) -- Leave vehicle with door open
+            while IsPedInAnyVehicle(target, false) do -- Wait until ped is out
+
+                Citizen.Wait(0)
+            end
+
+            ClearPedTasksImmediately(target) -- Cleared ped tasks after they get out of the vehicle
+            ResetPedLastVehicle(target) -- Make them forget what car they were in
+            TaskSmartFleePed(target, PlayerPedId(), 40.0, 20000) -- Make em flee
+
+            IsRobbing = false
+            TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
+            TriggerEvent('vehiclekeys:client:SetOwner', plate)
+            QBCore.Functions.Notify('You Got The Keys!', 'success')
         end
     end)
 end
