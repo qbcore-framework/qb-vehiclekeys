@@ -170,9 +170,11 @@ function LockVehicle()
                     SetVehicleDoorsLocked(veh, 2)
                     if(GetVehicleDoorLockStatus(veh) == 2)then
                         SetVehicleLights(veh,2)
-                        QBCore.Functions.Notify("Vehicle locked!")
                         Wait(250)
                         SetVehicleLights(veh,1)
+                        Wait(200)
+                        SetVehicleLights(veh,0)
+                        QBCore.Functions.Notify("Vehicle locked!")
                     else
                         QBCore.Functions.Notify("Something went wrong with the locking system!")
                     end
@@ -183,9 +185,11 @@ function LockVehicle()
                     SetVehicleDoorsLocked(veh, 1)
                     if(GetVehicleDoorLockStatus(veh) == 1)then
                         SetVehicleLights(veh,2)
-                        QBCore.Functions.Notify("Vehicle unlocked!")
                         Wait(250)
                         SetVehicleLights(veh,1)
+                        Wait(200)
+                        SetVehicleLights(veh,0)
+                        QBCore.Functions.Notify("Vehicle unlocked!")
                     else
                         QBCore.Functions.Notify("Something went wrong with the locking system!")
                     end
