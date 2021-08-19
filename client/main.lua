@@ -94,7 +94,7 @@ CreateThread(function()
 
             if inVeh and lockpicked and not IsHotwiring and not HasKey then
                 sleep = 10
-                local vehpos = GetEntityCoords(veh)
+		local vehpos = GetOffsetFromEntityInWorldCoords(veh, 0.0, 2.0, 1.0)
                 SetVehicleEngineOn(veh, false, false, true)
                 DrawText3D(vehpos.x, vehpos.y, vehpos.z, "~g~H~w~ - Hotwire")
                 if IsControlJustPressed(0, 74) then
