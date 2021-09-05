@@ -307,7 +307,7 @@ function Hotwire()
         end, function() -- Cancel
             StopAnimTask(ped, "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1.0)
             SetVehicleEngineOn(veh, false, false, true)
-            QBCore.Functions.Notify("Hotwire failed!", "error")
+            QBCore.Functions.Notify("Hotwire aborted!", "error")
             IsHotwiring = false
         end)
     end
