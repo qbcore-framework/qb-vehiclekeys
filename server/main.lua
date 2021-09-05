@@ -55,11 +55,17 @@ QBCore.Commands.Add("engine", "Toggle Engine", {}, false, function(source, args)
 	TriggerClientEvent('vehiclekeys:client:ToggleEngine', source)
 end)
 
-QBCore.Commands.Add("givecarkeys", "Give Car Keys", {{name = "id", help = "Player id"}}, true, function(source, args)
+QBCore.Commands.Add("givecarkeysto", "Give Car Keys to a specific person", {{name = "id", help = "Player id"}}, true, function(source, args)
 	local src = source
     local target = tonumber(args[1])
-    TriggerClientEvent('vehiclekeys:client:GiveKeys', src, target)
+    TriggerClientEvent('vehiclekeys:client:GiveKeysTo', src, target)
 end)
+
+QBCore.Commands.Add("givecarkeys", "Give Car Keys", {}, true, function(source, args)
+	local src = source
+    TriggerClientEvent('vehiclekeys:client:GiveKeys', src)
+end)
+
 
 function DoesPlateExist(plate)
     if VehicleList ~= nil then

@@ -39,10 +39,34 @@ AddEventHandler('vehiclekeys:client:SetOwner', function(plate)
     HasKey = true
 end)
 
-RegisterNetEvent('vehiclekeys:client:GiveKeys')
-AddEventHandler('vehiclekeys:client:GiveKeys', function(target)
+RegisterNetEvent('vehiclekeys:client:GiveKeysTo')
+AddEventHandler('vehiclekeys:client:GiveKeysTo', function(target)
     local plate = GetVehicleNumberPlateText(GetVehiclePedIsIn(PlayerPedId(), true))
     TriggerServerEvent('vehiclekeys:server:GiveVehicleKeys', plate, target)
+end)
+
+RegisterNetEvent('vehiclekeys:client:GiveKeys')
+AddEventHandler('vehiclekeys:client:GiveKeys', function()
+    local ped = PlayerPedId();
+    local vehicle = GetVehiclePedIsIn(ped, false)
+    -- Only give keys when you are in the driver seat
+    if vehicle ~= 0 and GetPedInVehicleSeat(vehicle, -1) == ped then
+        local seats = GetVehicleMaxNumberOfPassengers(vehicle);
+        local passenger = 0;
+        for i=0,seats do
+            passenger = GetPedInVehicleSeat(vehicle, i)
+            if passenger ~= 0 then
+                local plate = GetVehicleNumberPlateText(vehicle)
+                TriggerServerEvent('vehiclekeys:server:GiveVehicleKeys', plate, target)
+                break
+            end
+        end
+        if passenger == 0 then
+            TriggerEvent('QBCore:Notify', "There is nobody in the vehicle to give the keys to", "error")
+        end
+    else
+        TriggerEvent('QBCore:Notify', "You have to be in the driver seat", "error")
+    end
 end)
 
 RegisterNetEvent('vehiclekeys:client:ToggleEngine')
