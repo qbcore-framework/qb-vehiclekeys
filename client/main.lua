@@ -350,7 +350,7 @@ function RobVehicle(target)
     IsRobbing = true
     loadAnimDict('mp_am_hold_up')
     TaskPlayAnim(target, "mp_am_hold_up", "holdup_victim_20s", 8.0, -8.0, -1, 2, 0, false, false, false)
-    QBCore.Functions.Progressbar("rob_keys", "Attemping Robbery..", 6000, false, true, {}, {}, {}, {}, function()
+    QBCore.Functions.Progressbar("rob_keys", "Attempting Robbery..", 6000, false, true, {}, {}, {}, {}, function()
         local chance = math.random(1, 100)
         if chance > 85 then
             ClearPedTasksImmediately(target)
