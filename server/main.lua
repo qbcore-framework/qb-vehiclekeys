@@ -1,5 +1,19 @@
 local VehicleList = {}
 
+QBCore.Functions.CreateCallback('vehiclekeys:CheckOwnership', function(source, cb, plate)
+    local retval = false
+    if next(VehicleList) ~= nil then
+        for k,v in pairs(VehicleList) do
+            if v.plate == plate then
+                retval = true
+            else
+                retval = false
+            end
+        end
+    end
+    cb(retval)
+end)
+
 QBCore.Functions.CreateCallback('vehiclekeys:CheckHasKey', function(source, cb, plate)
     local Player = QBCore.Functions.GetPlayer(source)
     cb(CheckOwner(plate, Player.PlayerData.citizenid))
