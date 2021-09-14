@@ -1,5 +1,7 @@
 Config = {}
 
+Config.Rob = true
+
 Config.NoRobWeapons = {
     "WEAPON_UNARMED",
     "WEAPON_Knife",
