@@ -16,3 +16,5 @@ dependencies {
     'qb-core',
     'qb-skillbar'
 }
+
+lua54 'yes'

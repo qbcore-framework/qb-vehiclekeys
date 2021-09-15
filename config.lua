@@ -1,6 +1,12 @@
 Config = {}
-
-Config.Rob = true
+Config.Rob = true -- Enables robbing AI cars at gunpoint
+-- All chances are 0-1 <= so lower == less chance, higher == higher chance
+Config.HotwireChance = 0.5 -- Chance for successful hotwire or not
+Config.RemoveLockpick = 0.5 -- Chance to remove lockpick on fail
+Config.RobberyChance = 0.5 -- Chance to get ped keys or drive off
+Config.AlertCooldown = 10000 -- 10 seconds
+Config.PoliceAlertChance = 0.5 -- Chance of alerting police during the day
+Config.PoliceNightAlertChance = 0.25 -- Chance of alerting police at night (times:01-06)
 
 Config.NoRobWeapons = {
     "WEAPON_UNARMED",

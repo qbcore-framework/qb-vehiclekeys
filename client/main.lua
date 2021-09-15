@@ -239,7 +239,7 @@ function lockpickFinish(success)
     local ped = PlayerPedId()
     local pos = GetEntityCoords(ped)
     local vehicle = QBCore.Functions.GetClosestVehicle(pos)
-    local chance = math.random(1, 100)
+    local chance = math.random()
     if success then
         TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
         QBCore.Functions.Notify('Opened Door!', 'success')
@@ -252,7 +252,7 @@ function lockpickFinish(success)
         QBCore.Functions.Notify('Someone Called The Police!', 'error')
     end
 
-    if chance <= 50 then
+    if chance <= Config.RemoveLockpick then
         TriggerEvent('inventory:client:ItemBox', QBCore.Shared.Items["lockpick"], "remove")
         TriggerServerEvent("QBCore:Server:RemoveItem", "lockpick", 1)
     end
@@ -281,7 +281,7 @@ function Hotwire()
             flags = 16
         }, {}, {}, function() -- Done
             StopAnimTask(ped, "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1.0)
-            if (math.random(0, 100) < 50) then
+            if (math.random() <= Config.HotwireChance) then
                 lockpicked = false
                 TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
                 TriggerEvent('vehiclekeys:client:SetOwner', GetVehicleNumberPlateText(vehicle))
@@ -307,11 +307,11 @@ function PoliceCall()
     if not AlertSend then
         local ped = PlayerPedId()
         local pos = GetEntityCoords(ped)
-        local chance = 20
+        local chance = Config.PoliceAlertChance
         if GetClockHours() >= 1 and GetClockHours() <= 6 then
-            chance = 10
+            chance = Config.PoliceNightAlertChance
         end
-        if math.random(1, 100) <= chance then
+        if math.random() <= chance then
             local closestPed = GetNearbyPed()
             if closestPed ~= nil then
                 local msg = ""
@@ -351,7 +351,7 @@ function PoliceCall()
             end
         end
         AlertSend = true
-        SetTimeout(2 * (60 * 1000), function()
+        SetTimeout(Config.AlertCooldown, function()
             AlertSend = false
         end)
     end
@@ -364,8 +364,8 @@ function RobVehicle(target)
     loadAnimDict('mp_am_hold_up')
     TaskPlayAnim(target, "mp_am_hold_up", "holdup_victim_20s", 8.0, -8.0, -1, 2, 0, false, false, false)
     QBCore.Functions.Progressbar("rob_keys", "Attempting Robbery..", 6000, false, true, {}, {}, {}, {}, function()
-        local chance = math.random(1, 100)
-        if chance >= 50 then
+        local chance = math.random()
+        if chance <= Config.RobberyChance then
             TaskLeaveVehicle(target, GetVehiclePedIsUsing(target), 256)
             Wait(500)
             ClearPedTasksImmediately(target)
