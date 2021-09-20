@@ -215,6 +215,8 @@ end
 
 -- Lockpicking
 
+local usingAdvanced
+
 RegisterNetEvent('lockpicks:UseLockpick')
 AddEventHandler('lockpicks:UseLockpick', function(isAdvanced)
     LockpickDoor(isAdvanced)
@@ -229,6 +231,7 @@ function LockpickDoor(isAdvanced)
         if #(pos - vehpos) < 1.5 then
             local vehLockStatus = GetVehicleDoorLockStatus(vehicle)
             if (vehLockStatus > 0) then
+                usingAdvanced = isAdvanced
                 TriggerEvent('qb-lockpick:client:openLockpick', lockpickFinish)
             end
         end
@@ -251,10 +254,16 @@ function lockpickFinish(success)
         TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
         QBCore.Functions.Notify('Someone Called The Police!', 'error')
     end
-
-    if chance <= Config.RemoveLockpick then
-        TriggerEvent('inventory:client:ItemBox', QBCore.Shared.Items["lockpick"], "remove")
-        TriggerServerEvent("QBCore:Server:RemoveItem", "lockpick", 1)
+    if usingAdvanced then
+        if chance <= Config.RemoveLockpickAdvanced then
+            TriggerEvent('inventory:client:ItemBox', QBCore.Shared.Items["advancedlockpick"], "remove")
+            TriggerServerEvent("QBCore:Server:RemoveItem", "advancedlockpick", 1)
+        end
+    else
+        if chance <= Config.RemoveLockpickNormal then
+            TriggerEvent('inventory:client:ItemBox', QBCore.Shared.Items["lockpick"], "remove")
+            TriggerServerEvent("QBCore:Server:RemoveItem", "lockpick", 1)
+        end
     end
 end
 
