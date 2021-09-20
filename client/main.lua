@@ -215,6 +215,8 @@ end
 
 -- Lockpicking
 
+local usingAdvanced
+
 RegisterNetEvent('lockpicks:UseLockpick')
 AddEventHandler('lockpicks:UseLockpick', function(isAdvanced)
     LockpickDoor(isAdvanced)
@@ -229,6 +231,7 @@ function LockpickDoor(isAdvanced)
         if #(pos - vehpos) < 1.5 then
             local vehLockStatus = GetVehicleDoorLockStatus(vehicle)
             if (vehLockStatus > 0) then
+                usingAdvanced = isAdvanced
                 TriggerEvent('qb-lockpick:client:openLockpick', lockpickFinish)
             end
         end
@@ -253,8 +256,13 @@ function lockpickFinish(success)
     end
 
     if chance <= Config.RemoveLockpick then
-        TriggerEvent('inventory:client:ItemBox', QBCore.Shared.Items["lockpick"], "remove")
-        TriggerServerEvent("QBCore:Server:RemoveItem", "lockpick", 1)
+        if usingAdvanced then
+            TriggerEvent('inventory:client:ItemBox', QBCore.Shared.Items["advancedlockpick"], "remove")
+            TriggerServerEvent("QBCore:Server:RemoveItem", "advancedlockpick", 1)
+        else
+            TriggerEvent('inventory:client:ItemBox', QBCore.Shared.Items["lockpick"], "remove")
+            TriggerServerEvent("QBCore:Server:RemoveItem", "lockpick", 1)
+        end
     end
 end
 
