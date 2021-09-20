@@ -254,12 +254,13 @@ function lockpickFinish(success)
         TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
         QBCore.Functions.Notify('Someone Called The Police!', 'error')
     end
-
-    if chance <= Config.RemoveLockpick then
-        if usingAdvanced then
+    if usingAdvanced then
+        if chance <= Config.RemoveLockpickAdvanced then
             TriggerEvent('inventory:client:ItemBox', QBCore.Shared.Items["advancedlockpick"], "remove")
             TriggerServerEvent("QBCore:Server:RemoveItem", "advancedlockpick", 1)
-        else
+        end
+    else
+        if chance <= Config.RemoveLockpickNormal then
             TriggerEvent('inventory:client:ItemBox', QBCore.Shared.Items["lockpick"], "remove")
             TriggerServerEvent("QBCore:Server:RemoveItem", "lockpick", 1)
         end
