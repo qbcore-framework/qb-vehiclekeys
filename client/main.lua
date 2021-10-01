@@ -228,7 +228,7 @@ function LockpickDoor(isAdvanced)
     local vehicle = QBCore.Functions.GetClosestVehicle(pos)
     if vehicle ~= nil and vehicle ~= 0 then
         local vehpos = GetEntityCoords(vehicle)
-        if #(pos - vehpos) < 1.5 then
+        if #(pos - vehpos) < 2.5 then
             local vehLockStatus = GetVehicleDoorLockStatus(vehicle)
             if (vehLockStatus > 0) then
                 usingAdvanced = isAdvanced
