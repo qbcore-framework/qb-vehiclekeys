@@ -68,10 +68,10 @@ end)
 
 function CheckOwner(plate, identifier)
     local retval = false
-    if VehicleList ~= nil then
+    if VehicleList then
         local found = VehicleList[plate]
-        if found ~= nil then
-            retval = found.owners[identifier] ~= nil or found.owners[identifier] == true
+        if found then
+            retval = found.owners[identifier] or found.owners[identifier] == true
         end
     end
 
