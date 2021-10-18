@@ -17,16 +17,20 @@ AddEventHandler('vehiclekeys:server:SetVehicleOwner', function(plate)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if VehicleList ~= nil then
+        -- VehicleList exists so check for a plate
         local val = VehicleList[plate]
         if val ~= nil then
+            -- The plate exists
             VehicleList[plate].owners[Player.PlayerData.citizenid] = true
         else
+            -- Plate not currently tracked so store a new one with one owner
             VehicleList[plate] = {
                 owners = {}
             }
             VehicleList[plate].owners[Player.PlayerData.citizenid] = true
         end
     else
+        -- Initialize new VehicleList
         VehicleList = {}
         VehicleList[plate] = {
             owners = {}
@@ -61,15 +65,6 @@ QBCore.Commands.Add("givecarkeys", "Give Car Keys", {{name = "id", help = "Playe
     local target = tonumber(args[1])
     TriggerClientEvent('vehiclekeys:client:GiveKeys', src, target)
 end)
-
-function DoesPlateExist(plate)
-    local retval = false
-    if VehicleList ~= nil then
-        local found = VehicleList[plate]
-        retval = found ~= nil
-    end
-    return retval
-end
 
 function CheckOwner(plate, identifier)
     local retval = false
