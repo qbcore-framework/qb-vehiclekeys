@@ -1,16 +1,9 @@
 local VehicleList = {}
 
 QBCore.Functions.CreateCallback('vehiclekeys:CheckOwnership', function(source, cb, plate)
-    local retval = false
-    if next(VehicleList) ~= nil then
-        for k,v in pairs(VehicleList) do
-            if v.plate == plate then
-                retval = true
-            else
-                retval = false
-            end
-        end
-    end
+    local check = VehicleList[plate]
+    local retval = check ~= nil
+
     cb(retval)
 end)
 
@@ -24,27 +17,21 @@ AddEventHandler('vehiclekeys:server:SetVehicleOwner', function(plate)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if VehicleList ~= nil then
-        if DoesPlateExist(plate) then
-            for k, val in pairs(VehicleList) do
-                if val.plate == plate then
-                    table.insert(VehicleList[k].owners, Player.PlayerData.citizenid)
-                end
-            end
+        local val = VehicleList[plate]
+        if val ~= nil then
+            VehicleList[plate].owners[Player.PlayerData.citizenid] = true
         else
-            local vehicleId = #VehicleList+1
-            VehicleList[vehicleId] = {
-                plate = plate, 
-                owners = {},
+            VehicleList[plate] = {
+                owners = {}
             }
-            VehicleList[vehicleId].owners[1] = Player.PlayerData.citizenid
+            VehicleList[plate].owners[Player.PlayerData.citizenid] = true
         end
     else
-        local vehicleId = #VehicleList+1
-        VehicleList[vehicleId] = {
-            plate = plate, 
-            owners = {},
+        VehicleList = {}
+        VehicleList[plate] = {
+            owners = {}
         }
-        VehicleList[vehicleId].owners[1] = Player.PlayerData.citizenid
+        VehicleList[plate].owners[Player.PlayerData.citizenid] = true
     end
 end)
 
@@ -76,29 +63,23 @@ QBCore.Commands.Add("givecarkeys", "Give Car Keys", {{name = "id", help = "Playe
 end)
 
 function DoesPlateExist(plate)
+    local retval = false
     if VehicleList ~= nil then
-        for k, val in pairs(VehicleList) do
-            if val.plate == plate then
-                return true
-            end
-        end
+        local found = VehicleList[plate]
+        retval = found ~= nil
     end
-    return false
+    return retval
 end
 
 function CheckOwner(plate, identifier)
     local retval = false
     if VehicleList ~= nil then
-        for k, val in pairs(VehicleList) do
-            if val.plate == plate then
-                for key, owner in pairs(VehicleList[k].owners) do
-                    if owner == identifier then
-                        retval = true
-                    end
-                end
-            end
+        local found = VehicleList[plate]
+        if found ~= nil then
+            retval = found.owners[identifier] ~= nil or found.owners[identifier] == true
         end
     end
+
     return retval
 end
 
