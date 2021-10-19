@@ -16,10 +16,10 @@ RegisterServerEvent('vehiclekeys:server:SetVehicleOwner')
 AddEventHandler('vehiclekeys:server:SetVehicleOwner', function(plate)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
-    if VehicleList ~= nil then
+    if VehicleList then
         -- VehicleList exists so check for a plate
         local val = VehicleList[plate]
-        if val ~= nil then
+        if val then
             -- The plate exists
             VehicleList[plate].owners[Player.PlayerData.citizenid] = true
         else
