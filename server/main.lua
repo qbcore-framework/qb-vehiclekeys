@@ -66,12 +66,12 @@ QBCore.Commands.Add("givecarkeys", "Give Car Keys", {{name = "id", help = "Playe
     TriggerClientEvent('vehiclekeys:client:GiveKeys', src, target)
 end)
 
-function CheckOwner(plate, identifier)
+function CheckOwner1(plate, identifier)
     local retval = false
     if VehicleList then
         local found = VehicleList[plate]
         if found then
-            retval = found.owners[identifier] or found.owners[identifier] == true
+            retval = found.owners[identifier] ~= nil and found.owners[identifier]
         end
     end
 
