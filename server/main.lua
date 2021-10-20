@@ -14,28 +14,32 @@ end)
 
 RegisterServerEvent('vehiclekeys:server:SetVehicleOwner')
 AddEventHandler('vehiclekeys:server:SetVehicleOwner', function(plate)
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-    if VehicleList then
-        -- VehicleList exists so check for a plate
-        local val = VehicleList[plate]
-        if val then
-            -- The plate exists
-            VehicleList[plate].owners[Player.PlayerData.citizenid] = true
+    if plate then
+        local src = source
+        local Player = QBCore.Functions.GetPlayer(src)
+        if VehicleList then
+            -- VehicleList exists so check for a plate
+            local val = VehicleList[plate]
+            if val then
+                -- The plate exists
+                VehicleList[plate].owners[Player.PlayerData.citizenid] = true
+            else
+                -- Plate not currently tracked so store a new one with one owner
+                VehicleList[plate] = {
+                    owners = {}
+                }
+                VehicleList[plate].owners[Player.PlayerData.citizenid] = true
+            end
         else
-            -- Plate not currently tracked so store a new one with one owner
+            -- Initialize new VehicleList
+            VehicleList = {}
             VehicleList[plate] = {
                 owners = {}
             }
             VehicleList[plate].owners[Player.PlayerData.citizenid] = true
         end
     else
-        -- Initialize new VehicleList
-        VehicleList = {}
-        VehicleList[plate] = {
-            owners = {}
-        }
-        VehicleList[plate].owners[Player.PlayerData.citizenid] = true
+        print('vehiclekeys:server:SetVehicleOwner - plate argument is nil')
     end
 end)
 
