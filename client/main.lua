@@ -449,3 +449,5 @@ function DrawText3D(x, y, z, text)
     DrawRect(0.0, 0.0 + 0.0125, 0.017 + factor, 0.03, 0, 0, 0, 75)
     ClearDrawOrigin()
 end
+
+exports('HasKey', HasKey)
