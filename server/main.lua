@@ -12,8 +12,7 @@ QBCore.Functions.CreateCallback('vehiclekeys:CheckHasKey', function(source, cb, 
     cb(CheckOwner(plate, Player.PlayerData.citizenid))
 end)
 
-RegisterServerEvent('vehiclekeys:server:SetVehicleOwner')
-AddEventHandler('vehiclekeys:server:SetVehicleOwner', function(plate)
+RegisterNetEvent('vehiclekeys:server:SetVehicleOwner', function(plate)
     if plate then
         local src = source
         local Player = QBCore.Functions.GetPlayer(src)
@@ -43,8 +42,7 @@ AddEventHandler('vehiclekeys:server:SetVehicleOwner', function(plate)
     end
 end)
 
-RegisterServerEvent('vehiclekeys:server:GiveVehicleKeys')
-AddEventHandler('vehiclekeys:server:GiveVehicleKeys', function(plate, target)
+RegisterNetEvent('vehiclekeys:server:GiveVehicleKeys', function(plate, target)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if CheckOwner(plate, Player.PlayerData.citizenid) then
