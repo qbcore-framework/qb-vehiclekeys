@@ -1,5 +1,6 @@
 -- Variables
 
+QBCore = exports['qb-core']:GetCoreObject()
 local PlayerData = {}
 local HasKey = false
 local IsRobbing = false
