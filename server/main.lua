@@ -1,4 +1,46 @@
+-- Variables
+
 local VehicleList = {}
+
+-- Functions
+
+function CheckOwner(plate, identifier)
+    local retval = false
+    if VehicleList then
+        local found = VehicleList[plate]
+        if found then
+            retval = found.owners[identifier] ~= nil and found.owners[identifier]
+        end
+    end
+
+    return retval
+end
+
+-- Commands
+
+QBCore.Commands.Add("engine", "Toggle Engine", {}, false, function(source, args)
+	TriggerClientEvent('vehiclekeys:client:ToggleEngine', source)
+end)
+
+QBCore.Commands.Add("givecarkeys", "Give Car Keys", {{name = "id", help = "Player id"}}, true, function(source, args)
+	local src = source
+    local target = tonumber(args[1])
+    TriggerClientEvent('vehiclekeys:client:GiveKeys', src, target)
+end)
+
+-- Items
+
+QBCore.Functions.CreateUseableItem("lockpick", function(source, item)
+    local Player = QBCore.Functions.GetPlayer(source)
+    TriggerClientEvent("lockpicks:UseLockpick", source, false)
+end)
+
+QBCore.Functions.CreateUseableItem("advancedlockpick", function(source, item)
+    local Player = QBCore.Functions.GetPlayer(source)
+    TriggerClientEvent("lockpicks:UseLockpick", source, true)
+end)
+
+-- Callbacks
 
 QBCore.Functions.CreateCallback('vehiclekeys:CheckOwnership', function(source, cb, plate)
     local check = VehicleList[plate]
@@ -11,6 +53,8 @@ QBCore.Functions.CreateCallback('vehiclekeys:CheckHasKey', function(source, cb, 
     local Player = QBCore.Functions.GetPlayer(source)
     cb(CheckOwner(plate, Player.PlayerData.citizenid))
 end)
+
+-- Events
 
 RegisterNetEvent('vehiclekeys:server:SetVehicleOwner', function(plate)
     if plate then
@@ -56,36 +100,4 @@ RegisterNetEvent('vehiclekeys:server:GiveVehicleKeys', function(plate, target)
     else
         TriggerClientEvent('QBCore:Notify', source,  "You Dont Own This Vehicle", "error")
     end
-end)
-
-QBCore.Commands.Add("engine", "Toggle Engine", {}, false, function(source, args)
-	TriggerClientEvent('vehiclekeys:client:ToggleEngine', source)
-end)
-
-QBCore.Commands.Add("givecarkeys", "Give Car Keys", {{name = "id", help = "Player id"}}, true, function(source, args)
-	local src = source
-    local target = tonumber(args[1])
-    TriggerClientEvent('vehiclekeys:client:GiveKeys', src, target)
-end)
-
-function CheckOwner(plate, identifier)
-    local retval = false
-    if VehicleList then
-        local found = VehicleList[plate]
-        if found then
-            retval = found.owners[identifier] ~= nil and found.owners[identifier]
-        end
-    end
-
-    return retval
-end
-
-QBCore.Functions.CreateUseableItem("lockpick", function(source, item)
-    local Player = QBCore.Functions.GetPlayer(source)
-    TriggerClientEvent("lockpicks:UseLockpick", source, false)
-end)
-
-QBCore.Functions.CreateUseableItem("advancedlockpick", function(source, item)
-    local Player = QBCore.Functions.GetPlayer(source)
-    TriggerClientEvent("lockpicks:UseLockpick", source, true)
 end)
