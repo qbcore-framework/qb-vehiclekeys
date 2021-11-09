@@ -25,7 +25,7 @@ end)
 
 RegisterNetEvent('vehiclekeys:client:SetOwner', function(plate)
     local VehPlate = plate
-    local CurrentVehPlate = GetVehicleNumberPlateText(GetVehiclePedIsIn(PlayerPedId(), true))
+    local CurrentVehPlate = QBCore.Functions.GetPlate(GetVehiclePedIsIn(PlayerPedId(), true))
     if VehPlate == nil then
         VehPlate = CurrentVehPlate
     end
@@ -37,7 +37,7 @@ RegisterNetEvent('vehiclekeys:client:SetOwner', function(plate)
 end)
 
 RegisterNetEvent('vehiclekeys:client:GiveKeys', function(target)
-    local plate = GetVehicleNumberPlateText(GetVehiclePedIsIn(PlayerPedId(), true))
+    local plate = QBCore.Functions.GetPlate(GetVehiclePedIsIn(PlayerPedId(), true))
     TriggerServerEvent('vehiclekeys:server:GiveVehicleKeys', plate, target)
 end)
 
@@ -72,7 +72,7 @@ CreateThread(function()
             local entering = GetVehiclePedIsTryingToEnter(ped)
             if entering ~= 0 then
                 sleep = 2000
-                local plate = GetVehicleNumberPlateText(entering)
+                local plate = QBCore.Functions.GetPlate(entering)
                 QBCore.Functions.TriggerCallback('vehiclekeys:CheckOwnership', function(result)
                     if not result then -- if not player owned
                         local driver = GetPedInVehicleSeat(entering, -1)
@@ -156,7 +156,7 @@ function LockVehicle()
     local ped = PlayerPedId()
     local pos = GetEntityCoords(ped)
     local veh = QBCore.Functions.GetClosestVehicle(pos)
-    local plate = GetVehicleNumberPlateText(veh)
+    local plate = QBCore.Functions.GetPlate(veh)
     local vehpos = GetEntityCoords(veh)
     if IsPedInAnyVehicle(ped) then
         veh = GetVehiclePedIsIn(ped)
@@ -241,7 +241,7 @@ function lockpickFinish(success)
         QBCore.Functions.Notify('Opened Door!', 'success')
         SetVehicleDoorsLocked(vehicle, 1)
         lockpicked = true
-        lockpickedPlate = GetVehicleNumberPlateText(vehicle)
+        lockpickedPlate = QBCore.Functions.GetPlate(vehicle)
     else
         PoliceCall()
         TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
@@ -286,7 +286,7 @@ function Hotwire()
             if (math.random() <= Config.HotwireChance) then
                 lockpicked = false
                 TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
-                TriggerEvent('vehiclekeys:client:SetOwner', GetVehicleNumberPlateText(vehicle))
+                TriggerEvent('vehiclekeys:client:SetOwner', QBCore.Functions.GetPlate(vehicle))
                 QBCore.Functions.Notify("Hotwire succeeded!")
             else
                 SetVehicleEngineOn(veh, false, false, true)
@@ -332,14 +332,14 @@ function PoliceCall()
                     else
                         Name = "Unknown"
                     end
-                    local modelPlate = GetVehicleNumberPlateText(vehicle)
+                    local modelPlate = QBCore.Functions.GetPlate(vehicle)
                     local msg = "Vehicle theft attempt at " .. streetLabel .. ". Vehicle: " .. Name .. ", Licenseplate: " .. modelPlate
                     local alertTitle = "Vehicle theft attempt at"
                     TriggerServerEvent("police:server:VehicleCall", pos, msg, alertTitle, streetLabel, modelPlate, Name)
                 else
                     local vehicle = QBCore.Functions.GetClosestVehicle()
                     local modelName = GetDisplayNameFromVehicleModel(GetEntityModel(vehicle)):lower()
-                    local modelPlate = GetVehicleNumberPlateText(vehicle)
+                    local modelPlate = QBCore.Functions.GetPlate(vehicle)
                     if QBCore.Shared.Vehicles[modelName] ~= nil then
                         Name = QBCore.Shared.Vehicles[modelName]["brand"] .. ' ' .. QBCore.Shared.Vehicles[modelName]["name"]
                     else
@@ -372,7 +372,7 @@ function RobVehicle(target)
             Wait(500)
             ClearPedTasksImmediately(target)
             TaskReactAndFleePed(target, PlayerPedId())
-            local plate = GetVehicleNumberPlateText(GetVehiclePedIsIn(target, true))
+            local plate = QBCore.Functions.GetPlate(GetVehiclePedIsIn(target, true))
             TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
             TriggerEvent('vehiclekeys:client:SetOwner', plate)
             QBCore.Functions.Notify('You Got The Keys!', 'success')
