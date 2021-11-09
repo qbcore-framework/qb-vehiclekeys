@@ -9,25 +9,21 @@ local lockpickedPlate = nil
 
 -- Events
 
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
-AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     PlayerData = QBCore.Functions.GetPlayerData()
     isLoggedIn = true
 end)
 
-RegisterNetEvent('QBCore:Client:OnPlayerUnload')
-AddEventHandler('QBCore:Client:OnPlayerUnload', function()
+RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
     isLoggedIn = false
     PlayerData = {}
 end)
 
-RegisterNetEvent('QBCore:Client:OnJobUpdate')
-AddEventHandler('QBCore:Client:OnJobUpdate', function(JobInfo)
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
     PlayerData.job = JobInfo
 end)
 
-RegisterNetEvent('vehiclekeys:client:SetOwner')
-AddEventHandler('vehiclekeys:client:SetOwner', function(plate)
+RegisterNetEvent('vehiclekeys:client:SetOwner', function(plate)
     local VehPlate = plate
     local CurrentVehPlate = QBCore.Functions.GetPlate(GetVehiclePedIsIn(PlayerPedId(), true))
     if VehPlate == nil then
@@ -40,14 +36,12 @@ AddEventHandler('vehiclekeys:client:SetOwner', function(plate)
     HasKey = true
 end)
 
-RegisterNetEvent('vehiclekeys:client:GiveKeys')
-AddEventHandler('vehiclekeys:client:GiveKeys', function(target)
+RegisterNetEvent('vehiclekeys:client:GiveKeys', function(target)
     local plate = QBCore.Functions.GetPlate(GetVehiclePedIsIn(PlayerPedId(), true))
     TriggerServerEvent('vehiclekeys:server:GiveVehicleKeys', plate, target)
 end)
 
-RegisterNetEvent('vehiclekeys:client:ToggleEngine')
-AddEventHandler('vehiclekeys:client:ToggleEngine', function()
+RegisterNetEvent('vehiclekeys:client:ToggleEngine', function()
     local EngineOn = IsVehicleEngineOn(GetVehiclePedIsIn(PlayerPedId()))
     local veh = GetVehiclePedIsIn(PlayerPedId(), true)
     if HasKey then
@@ -176,7 +170,7 @@ function LockVehicle()
                     false)
 
                 if vehLockStatus == 1 then
-                    Citizen.Wait(750)
+                    Wait(750)
                     ClearPedTasks(ped)
                     TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "lock", 0.3)
                     SetVehicleDoorsLocked(veh, 2)
@@ -191,7 +185,7 @@ function LockVehicle()
                         QBCore.Functions.Notify("Something went wrong with the locking system!")
                     end
                 else
-                    Citizen.Wait(750)
+                    Wait(750)
                     ClearPedTasks(ped)
                     TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "unlock", 0.3)
                     SetVehicleDoorsLocked(veh, 1)
@@ -217,8 +211,7 @@ end
 
 local usingAdvanced
 
-RegisterNetEvent('lockpicks:UseLockpick')
-AddEventHandler('lockpicks:UseLockpick', function(isAdvanced)
+RegisterNetEvent('lockpicks:UseLockpick', function(isAdvanced)
     LockpickDoor(isAdvanced)
 end)
 
@@ -324,8 +317,7 @@ function PoliceCall()
             local closestPed = GetNearbyPed()
             if closestPed ~= nil then
                 local msg = ""
-                local s1, s2 = Citizen.InvokeNative(0x2EB41072B4C1E4C0, pos.x, pos.y, pos.z, Citizen.PointerValueInt(),
-                    Citizen.PointerValueInt())
+                local s1, s2 = GetStreetNameAtCoord(pos.x, pos.y, pos.z)
                 local streetLabel = GetStreetNameFromHashKey(s1)
                 local street2 = GetStreetNameFromHashKey(s2)
                 if street2 ~= nil and street2 ~= "" then
@@ -403,7 +395,7 @@ end
 function loadAnimDict(dict)
     while (not HasAnimDictLoaded(dict)) do
         RequestAnimDict(dict)
-        Citizen.Wait(0)
+        Wait(0)
     end
 end
 
