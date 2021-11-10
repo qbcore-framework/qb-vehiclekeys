@@ -1,17 +1,23 @@
+-- Variables
+
 local QBCore = exports['qb-core']:GetCoreObject()
 local VehicleList = {}
 
-QBCore.Functions.CreateCallback('vehiclekeys:CheckOwnership', function(source, cb, plate)
-    local check = VehicleList[plate]
-    local retval = check ~= nil
+-- Functions
 
-    cb(retval)
-end)
+function CheckOwner(plate, identifier)
+    local retval = false
+    if VehicleList then
+        local found = VehicleList[plate]
+        if found then
+            retval = found.owners[identifier] ~= nil and found.owners[identifier]
+        end
+    end
 
-QBCore.Functions.CreateCallback('vehiclekeys:CheckHasKey', function(source, cb, plate)
-    local Player = QBCore.Functions.GetPlayer(source)
-    cb(CheckOwner(plate, Player.PlayerData.citizenid))
-end)
+    return retval
+end
+
+-- Events
 
 RegisterNetEvent('vehiclekeys:server:SetVehicleOwner', function(plate)
     if plate then
@@ -59,6 +65,22 @@ RegisterNetEvent('vehiclekeys:server:GiveVehicleKeys', function(plate, target)
     end
 end)
 
+-- callback
+
+QBCore.Functions.CreateCallback('vehiclekeys:CheckOwnership', function(source, cb, plate)
+    local check = VehicleList[plate]
+    local retval = check ~= nil
+
+    cb(retval)
+end)
+
+QBCore.Functions.CreateCallback('vehiclekeys:CheckHasKey', function(source, cb, plate)
+    local Player = QBCore.Functions.GetPlayer(source)
+    cb(CheckOwner(plate, Player.PlayerData.citizenid))
+end)
+
+-- command
+
 QBCore.Commands.Add("engine", "Toggle Engine", {}, false, function(source, args)
 	TriggerClientEvent('vehiclekeys:client:ToggleEngine', source)
 end)
@@ -69,17 +91,7 @@ QBCore.Commands.Add("givecarkeys", "Give Car Keys", {{name = "id", help = "Playe
     TriggerClientEvent('vehiclekeys:client:GiveKeys', src, target)
 end)
 
-function CheckOwner(plate, identifier)
-    local retval = false
-    if VehicleList then
-        local found = VehicleList[plate]
-        if found then
-            retval = found.owners[identifier] ~= nil and found.owners[identifier]
-        end
-    end
-
-    return retval
-end
+-- items
 
 QBCore.Functions.CreateUseableItem("lockpick", function(source, item)
     local Player = QBCore.Functions.GetPlayer(source)
