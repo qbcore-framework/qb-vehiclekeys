@@ -1,8 +1,8 @@
+local QBCore = exports['qb-core']:GetCoreObject()
 local PlayerData = {}
 local HasKey = false
 local IsRobbing = false
 local IsHotwiring = false
-local isLoggedIn = false
 local AlertSend = false
 local lockpicked = false
 local lockpickedPlate = nil
@@ -11,11 +11,9 @@ local lockpickedPlate = nil
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     PlayerData = QBCore.Functions.GetPlayerData()
-    isLoggedIn = true
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
-    isLoggedIn = false
     PlayerData = {}
 end)
 
@@ -53,21 +51,11 @@ RegisterNetEvent('vehiclekeys:client:ToggleEngine', function()
     end
 end)
 
--- This event is to prevent you from having to /logout after restarting the vehiclekeys, will only trigger when the resource gets restarted manually or by the server, not client-side, client-side has it's own event: onClientResourceStart
-
-AddEventHandler('onResourceStart', function(resource)
-    if resource == GetCurrentResourceName() then
-        Wait(100)
-        PlayerData = QBCore.Functions.GetPlayerData()
-        isLoggedIn = true
-    end
-end)
-
 -- Main Thread
 CreateThread(function()
     while true do
         local sleep = 100
-        if isLoggedIn then
+        if LocalPlayer.state.isLoggedIn then
             local ped = PlayerPedId()
             local entering = GetVehiclePedIsTryingToEnter(ped)
             if entering ~= 0 then
