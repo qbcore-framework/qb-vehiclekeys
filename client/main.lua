@@ -1,5 +1,5 @@
 local QBCore = exports['qb-core']:GetCoreObject()
-local PlayerData = {}
+
 local HasKey = false
 local IsRobbing = false
 local IsHotwiring = false
@@ -8,18 +8,6 @@ local lockpicked = false
 local lockpickedPlate = nil
 
 -- Events
-
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    PlayerData = QBCore.Functions.GetPlayerData()
-end)
-
-RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
-    PlayerData = {}
-end)
-
-RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
-    PlayerData.job = JobInfo
-end)
 
 RegisterNetEvent('vehiclekeys:client:SetOwner', function(plate)
     local VehPlate = plate
