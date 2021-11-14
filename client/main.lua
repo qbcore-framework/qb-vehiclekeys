@@ -423,3 +423,5 @@ CreateThread(function()
         Wait(sleep)
     end
 end)
+
+exports('HasVehicleKey', HasVehicleKey)
