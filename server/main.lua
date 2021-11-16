@@ -90,15 +90,3 @@ QBCore.Commands.Add("givecarkeys", "Give Car Keys", {{name = "id", help = "Playe
     local target = tonumber(args[1])
     TriggerClientEvent('vehiclekeys:client:GiveKeys', src, target)
 end)
-
--- items
-
-QBCore.Functions.CreateUseableItem("lockpick", function(source, item)
-    local Player = QBCore.Functions.GetPlayer(source)
-    TriggerClientEvent("lockpicks:UseLockpick", source, false)
-end)
-
-QBCore.Functions.CreateUseableItem("advancedlockpick", function(source, item)
-    local Player = QBCore.Functions.GetPlayer(source)
-    TriggerClientEvent("lockpicks:UseLockpick", source, true)
-end)
