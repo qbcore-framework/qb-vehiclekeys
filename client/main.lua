@@ -1,7 +1,6 @@
 -- Variables
 
 local QBCore = exports['qb-core']:GetCoreObject()
-local PlayerData = {}
 local HasKey = false
 local IsRobbing = false
 local IsHotwiring = false
@@ -287,18 +286,6 @@ function DrawText3D(x, y, z, text)
 end
 
 -- Events
-
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    PlayerData = QBCore.Functions.GetPlayerData()
-end)
-
-RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
-    PlayerData = {}
-end)
-
-RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
-    PlayerData.job = JobInfo
-end)
 
 RegisterNetEvent('lockpicks:UseLockpick', function(isAdvanced)
     LockpickDoor(isAdvanced)
