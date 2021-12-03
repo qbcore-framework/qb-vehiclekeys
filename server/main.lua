@@ -7,13 +7,17 @@ local VehicleList = {}
 
 function CheckOwner(plate, identifier)
     local retval = false
-    if VehicleList then
-        local found = VehicleList[plate]
-        if found then
-            retval = found.owners[identifier] ~= nil and found.owners[identifier]
+    if VehicleList ~= nil then
+        for k, val in pairs(VehicleList) do
+            if val.plate == plate then
+                for key, owner in pairs(VehicleList[k].owners) do
+                    if owner == identifier then
+                        retval = true
+                    end
+                end
+            end
         end
     end
-
     return retval
 end
 
