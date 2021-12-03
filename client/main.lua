@@ -372,7 +372,7 @@ CreateThread(function()
             end
 
             if IsPedInAnyVehicle(ped, false) and lockpicked and not IsHotwiring and not HasKey then
-                sleep = 7
+                sleep = 5
                 local veh = GetVehiclePedIsIn(ped)
                 local vehpos = GetOffsetFromEntityInWorldCoords(veh, 0.0, 2.0, 1.0)
                 SetVehicleEngineOn(veh, false, false, true)
