@@ -305,8 +305,13 @@ RegisterNetEvent('vehiclekeys:client:SetOwner', function(plate)
 end)
 
 RegisterNetEvent('vehiclekeys:client:GiveKeys', function(target)
-    local plate = QBCore.Functions.GetPlate(GetVehiclePedIsIn(PlayerPedId(), true))
-    TriggerServerEvent('vehiclekeys:server:GiveVehicleKeys', plate, target)
+    local vehicles = IsPedInAnyVehicle(PlayerPedId())
+    if vehicles then
+        local plate = QBCore.Functions.GetPlate(GetVehiclePedIsIn(PlayerPedId(), true))
+        TriggerServerEvent('vehiclekeys:server:GiveVehicleKeys', plate, target)
+    else
+        QBCore.Functions.Notify('you need to be in a vehicle to give key', 'error')
+    end
 end)
 
 RegisterNetEvent('vehiclekeys:client:ToggleEngine', function()
