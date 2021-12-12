@@ -5,7 +5,7 @@ local VehicleList = {}
 
 -- Functions
 
-function CheckOwner(plate, identifier)
+local function CheckOwner(plate, identifier)
     local retval = false
     if VehicleList then
         local found = VehicleList[plate]
