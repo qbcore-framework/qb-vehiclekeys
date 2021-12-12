@@ -11,7 +11,14 @@ local usingAdvanced
 
 -- Functions
 
-function LockVehicle()
+local function loadAnimDict(dict)
+    while (not HasAnimDictLoaded(dict)) do
+        RequestAnimDict(dict)
+        Wait(0)
+    end
+end
+
+local function LockVehicle()
     local ped = PlayerPedId()
     local pos = GetEntityCoords(ped)
     local veh = QBCore.Functions.GetClosestVehicle(pos)
@@ -66,23 +73,7 @@ function LockVehicle()
     end
 end
 
-function LockpickDoor(isAdvanced)
-    local ped = PlayerPedId()
-    local pos = GetEntityCoords(ped)
-    local vehicle = QBCore.Functions.GetClosestVehicle(pos)
-    if vehicle ~= nil and vehicle ~= 0 then
-        local vehpos = GetEntityCoords(vehicle)
-        if #(pos - vehpos) < 2.5 then
-            local vehLockStatus = GetVehicleDoorLockStatus(vehicle)
-            if (vehLockStatus > 0) then
-                usingAdvanced = isAdvanced
-                TriggerEvent('qb-lockpick:client:openLockpick', lockpickFinish)
-            end
-        end
-    end
-end
-
-function lockpickFinish(success)
+local function lockpickFinish(success)
     local ped = PlayerPedId()
     local pos = GetEntityCoords(ped)
     local vehicle = QBCore.Functions.GetClosestVehicle(pos)
@@ -111,7 +102,23 @@ function lockpickFinish(success)
     end
 end
 
-function Hotwire()
+local function LockpickDoor(isAdvanced)
+    local ped = PlayerPedId()
+    local pos = GetEntityCoords(ped)
+    local vehicle = QBCore.Functions.GetClosestVehicle(pos)
+    if vehicle ~= nil and vehicle ~= 0 then
+        local vehpos = GetEntityCoords(vehicle)
+        if #(pos - vehpos) < 2.5 then
+            local vehLockStatus = GetVehicleDoorLockStatus(vehicle)
+            if (vehLockStatus > 0) then
+                usingAdvanced = isAdvanced
+                TriggerEvent('qb-lockpick:client:openLockpick', lockpickFinish)
+            end
+        end
+    end
+end
+
+local function Hotwire()
     if not HasKey then
         local ped = PlayerPedId()
         local vehicle = GetVehiclePedIsIn(ped, true)
@@ -152,7 +159,23 @@ function Hotwire()
     end
 end
 
-function PoliceCall()
+local function GetNearbyPed()
+    local retval = nil
+    local PlayerPeds = {}
+    for _, player in ipairs(GetActivePlayers()) do
+        local ped = GetPlayerPed(player)
+		PlayerPeds[#PlayerPeds+1] = ped
+    end
+    local player = PlayerPedId()
+    local coords = GetEntityCoords(player)
+    local closestPed, closestDistance = QBCore.Functions.GetClosestPed(coords, PlayerPeds)
+    if not IsEntityDead(closestPed) and closestDistance < 30.0 then
+        retval = closestPed
+    end
+    return retval
+end
+
+local function PoliceCall()
     if not AlertSend then
         local ped = PlayerPedId()
         local pos = GetEntityCoords(ped)
@@ -205,7 +228,7 @@ function PoliceCall()
     end
 end
 
-function RobVehicle(target)
+local function RobVehicle(target)
     IsRobbing = true
     loadAnimDict('mp_am_hold_up')
     TaskPlayAnim(target, "mp_am_hold_up", "holdup_victim_20s", 8.0, -8.0, -1, 2, 0, false, false, false)
@@ -235,14 +258,7 @@ function RobVehicle(target)
     end)
 end
 
-function loadAnimDict(dict)
-    while (not HasAnimDictLoaded(dict)) do
-        RequestAnimDict(dict)
-        Wait(0)
-    end
-end
-
-function IsBlacklistedWeapon()
+local function IsBlacklistedWeapon()
     local weapon = GetSelectedPedWeapon(PlayerPedId())
     if weapon ~= nil then
         for _, v in pairs(Config.NoRobWeapons) do
@@ -254,23 +270,7 @@ function IsBlacklistedWeapon()
     return false
 end
 
-function GetNearbyPed()
-    local retval = nil
-    local PlayerPeds = {}
-    for _, player in ipairs(GetActivePlayers()) do
-        local ped = GetPlayerPed(player)
-        table.insert(PlayerPeds, ped)
-    end
-    local player = PlayerPedId()
-    local coords = GetEntityCoords(player)
-    local closestPed, closestDistance = QBCore.Functions.GetClosestPed(coords, PlayerPeds)
-    if not IsEntityDead(closestPed) and closestDistance < 30.0 then
-        retval = closestPed
-    end
-    return retval
-end
-
-function DrawText3D(x, y, z, text)
+local function DrawText3D(x, y, z, text)
     SetTextScale(0.35, 0.35)
     SetTextFont(4)
     SetTextProportional(1)
