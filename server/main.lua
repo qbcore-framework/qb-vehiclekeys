@@ -5,7 +5,7 @@ local VehicleList = {}
 
 -- Functions
 
-function CheckOwner(plate, identifier)
+local function CheckOwner(plate, identifier)
     local retval = false
     if VehicleList then
         local found = VehicleList[plate]
@@ -67,14 +67,14 @@ end)
 
 -- callback
 
-QBCore.Functions.CreateCallback('vehiclekeys:CheckOwnership', function(source, cb, plate)
+QBCore.Functions.CreateCallback('vehiclekeys:server:CheckOwnership', function(source, cb, plate)
     local check = VehicleList[plate]
     local retval = check ~= nil
 
     cb(retval)
 end)
 
-QBCore.Functions.CreateCallback('vehiclekeys:CheckHasKey', function(source, cb, plate)
+QBCore.Functions.CreateCallback('vehiclekeys:server:CheckHasKey', function(source, cb, plate)
     local Player = QBCore.Functions.GetPlayer(source)
     cb(CheckOwner(plate, Player.PlayerData.citizenid))
 end)
