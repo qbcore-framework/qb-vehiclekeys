@@ -18,6 +18,17 @@ local function loadAnimDict(dict)
     end
 end
 
+local function HasVehicleKey(plate)
+	QBCore.Functions.TriggerCallback('vehiclekeys:server:CheckHasVehicleKey', function(result)
+		if result then
+			HasVehicleKey = true
+		else
+			HasVehicleKey = false
+		end
+	end, plate)
+	return HasVehicleKey
+end
+
 local function LockVehicle()
     local ped = PlayerPedId()
     local pos = GetEntityCoords(ped)
