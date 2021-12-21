@@ -18,17 +18,6 @@ local function loadAnimDict(dict)
     end
 end
 
-local function HasVehicleKey(plate)
-	QBCore.Functions.TriggerCallback('vehiclekeys:server:CheckHasKey', function(result)
-		if result then
-			HasVehicleKey = true
-		else
-			HasVehicleKey = false
-		end
-	end, plate)
-	return HasVehicleKey
-end
-
 local function LockVehicle()
     local ped = PlayerPedId()
     local pos = GetEntityCoords(ped)
@@ -295,6 +284,25 @@ local function DrawText3D(x, y, z, text)
     DrawRect(0.0, 0.0 + 0.0125, 0.017 + factor, 0.03, 0, 0, 0, 75)
     ClearDrawOrigin()
 end
+
+local function HasVehicleKey(plate)
+	QBCore.Functions.TriggerCallback('vehiclekeys:server:CheckHasKey', function(result)
+		if result then
+			HasVehicleKey = true
+		else
+			HasVehicleKey = false
+		end
+	end, plate)
+	return HasVehicleKey
+end
+
+exports('HasVehicleKey', HasVehicleKey)
+
+local function SetVehicleKeys(plate)
+    TriggerServerEvent('vehiclekeys:server:SetVehicleOwner', plate)
+end
+
+exports('SetVehicleKeys', SetVehicleKeys)
 
 -- Events
 
