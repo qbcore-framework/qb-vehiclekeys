@@ -281,6 +281,13 @@ local function IsBlacklistedWeapon()
     return false
 end
 
+local function SetVehiclePlate = function(Vehicle, Plate)
+	NetworkRequestControlOfEntity(Vehicle)
+	SetTimeout(100, function()
+		SetVehicleNumberPlateText(Vehicle, Plate)
+	end)
+end
+
 local function DrawText3D(x, y, z, text)
     SetTextScale(0.35, 0.35)
     SetTextFont(4)
