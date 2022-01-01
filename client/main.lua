@@ -356,7 +356,7 @@ CreateThread(function()
                 sleep = 2000
                 local plate = QBCore.Functions.GetPlate(entering)
                 QBCore.Functions.TriggerCallback('vehiclekeys:server:CheckOwnership', function(result)
-                    if not result then -- if not player owned
+                    if result ~= true then -- if not player owned
                         local driver = GetPedInVehicleSeat(entering, -1)
                         if driver ~= 0 and not IsPedAPlayer(driver) then
                             if Config.Rob then
@@ -365,18 +365,19 @@ CreateThread(function()
                                     SetVehicleDoorsLocked(entering, 1)
                                     HasVehicleKey = true
                                 else
-                                    SetVehicleDoorsLocked(entering, 2)
+                                    SetVehicleDoorsLocked(entering, 1)
+                                    HasVehicleKey = false
                                 end
                             else
                                 TriggerEvent("vehiclekeys:client:SetOwner", plate)
                                 SetVehicleDoorsLocked(entering, 1)
-                                HasVehicleKey = true
+                                HasVehicleKey = false
                             end
                         else
                             QBCore.Functions.TriggerCallback('vehiclekeys:server:CheckHasKey', function(result)
                                 if not lockpicked and lockpickedPlate ~= plate then
                                     if result == false then
-                                        SetVehicleDoorsLocked(entering, 2)
+                                        SetVehicleDoorsLocked(entering, 1)
                                         HasVehicleKey = false
                                     else 
                                         HasVehicleKey = true
@@ -389,12 +390,13 @@ CreateThread(function()
                                     end
                                 end
                             end, plate)
+                            HasVehicleKey = true
                         end
                     end
                 end, plate)
             end
 
-            if IsPedInAnyVehicle(ped, false) and lockpicked and not IsHotwiring and not HasVehicleKey then
+            if IsPedInAnyVehicle(ped, false) and HasVehicleKey ~= true then
                 sleep = 5
                 local veh = GetVehiclePedIsIn(ped)
                 local vehpos = GetOffsetFromEntityInWorldCoords(veh, 0.0, 2.0, 1.0)
