@@ -352,7 +352,7 @@ CreateThread(function()
         if LocalPlayer.state.isLoggedIn then
             local ped = PlayerPedId()
             local entering = GetVehiclePedIsTryingToEnter(ped)
-            if entering ~= 0 then
+            if entering ~= 0 and not Entity(entering).state.ignoreLocks then
                 sleep = 2000
                 local plate = QBCore.Functions.GetPlate(entering)
                 QBCore.Functions.TriggerCallback('vehiclekeys:server:CheckOwnership', function(result)
