@@ -319,7 +319,7 @@ RegisterNetEvent('vehiclekeys:client:GiveKeys', function(target)
     local vehicles = IsPedInAnyVehicle(PlayerPedId())
     if vehicles then
         local plate = QBCore.Functions.GetPlate(GetVehiclePedIsIn(PlayerPedId(), true))
-        TriggerServerEvent('vehiclekeys:server:GiveVehicleKeys', plate, target)
+        TriggerServerEvent('vehiclekeys:server:GiveVehicleKeys', plate, NetworkGetPlayerIndexFromPed(target.entity))
     else
         QBCore.Functions.Notify('you need to be in a vehicle to give key', 'error')
     end
