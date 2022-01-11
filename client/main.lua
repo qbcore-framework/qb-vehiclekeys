@@ -18,17 +18,6 @@ local function loadAnimDict(dict)
     end
 end
 
-local function HasVehicleKey(plate)
-	QBCore.Functions.TriggerCallback('vehiclekeys:server:CheckHasKey', function(result)
-		if result then
-			HasVehicleKey = true
-		else
-			HasVehicleKey = false
-		end
-	end, plate)
-	return HasVehicleKey
-end
-
 local function LockVehicle()
     local ped = PlayerPedId()
     local pos = GetEntityCoords(ped)
@@ -378,13 +367,13 @@ CreateThread(function()
                                     if result == false then
                                         SetVehicleDoorsLocked(entering, 2)
                                         HasVehicleKey = false
-                                    else 
+                                    else
                                         HasVehicleKey = true
                                     end
                                 elseif lockpicked and lockpickedPlate == plate then
                                     if result == false then
                                         HasVehicleKey = false
-                                    else 
+                                    else
                                         HasVehicleKey = true
                                     end
                                 end
