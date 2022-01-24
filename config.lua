@@ -15,6 +15,8 @@ Config.AlertCooldown = 10000 -- 10 seconds
 Config.PoliceAlertChance = 1.75 -- Chance of alerting police during the day
 Config.PoliceNightAlertChance = 1.50 -- Chance of alerting police at night (times:01-06)
 
+Config.NoLockVehicles = {}
+
 Config.NoCarjackWeapons = {
     "WEAPON_UNARMED",
     "WEAPON_Knife",
