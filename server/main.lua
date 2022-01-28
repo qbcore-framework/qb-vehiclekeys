@@ -18,6 +18,21 @@ local function CheckOwner(plate, identifier)
 end
 
 -- Events
+RegisterNetEvent('vehiclekeys:server:SetVehicleOwnerToCitizenid', function(plate, citizenid)
+    if VehicleList then
+        local val = VehicleList[plate]
+        if val then
+            VehicleList[plate].owners[citizenid] = true
+        else
+            VehicleList[plate] = { owners = {} }
+            VehicleList[plate].owners[citizenid] = true
+        end
+    else
+        VehicleList = {}
+        VehicleList[plate] = { owners = {} }
+        VehicleList[plate].owners[citizenid] = true
+    end
+end)
 
 RegisterNetEvent('vehiclekeys:server:SetVehicleOwner', function(plate)
     if plate then
