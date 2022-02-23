@@ -90,3 +90,42 @@ QBCore.Commands.Add("givecarkeys", "Give Car Keys", {{name = "id", help = "Playe
     local target = tonumber(args[1])
     TriggerClientEvent('vehiclekeys:client:GiveKeys', src, target)
 end)
+
+
+-- remove keys
+local function removeKeys(plate, citizenid)
+    local car = MySQL.single.await('SELECT * FROM player_vehicles WHERE citizenid = ? AND player = ?', {citizenid, plate})
+
+    if not car then return false, "failed_not_found" end
+
+    local removeKeys = MySQL.update.await('UPDATE player_vehicles SET citizenid = NULL, license = null WHERE id = ?', {car.id})
+    VehicleList[plate] = {}
+    return true, "success"
+end
+
+RegisterNetEvent('vehiclekeys:server:RemoveKeys', function(plate, citizenid)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local PlayerData = Player.PlayerData
+    local isPrincipal = IsPlayerAceAllowed(src, 'removekeys')
+    local isGod = QBCore.Functions.HasPermission(src, 'god')
+    local isAdmin = QBCore.Functions.HasPermission(src, 'admin')
+
+    if isPrincipal or isGod or isAdmin or citizenid == PlayerData.citizenid then
+        local result, message = removeKeys(plate, citizenid)
+
+        if not result then
+            if message == "failed_not_found" then
+                TriggerClientEvent('QBCore:Notify', src,  "Vehicle is not found.", "error")
+            end
+            return false
+        end
+
+        TriggerClientEvent('QBCore:Notify', src,  ("You have removed the keys of vehicle %s"):format(plate), "success")
+
+    else
+        TriggerClientEvent('QBCore:Notify', src,  "You do not own this vehicle or lack the permissions.", "error")
+    end
+end)
+
+exports('RemoveKeys', removeKeys)
