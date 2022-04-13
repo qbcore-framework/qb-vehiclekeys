@@ -499,26 +499,13 @@ function AttemptPoliceAlert(type)
             chance = Config.PoliceNightAlertChance
         end
         if math.random() <= chance then
-            local closestPed = GetNearbyPed()
-            if closestPed ~= nil then
-                local pedData = exports['cd_dispatch']:GetPlayerInfo()
-                pedData.type = type
-                pedData.sprite = 229
-                if type == "steal" then pedData.sprite = 380 end
-
-                --QBCore.Functions.Notify('Someone called the cops!', 'error')
-                AlertPolice(pedData)
-            end
+           TriggerServerEvent('police:server:policeAlert', 'Vehicle theft in progress')
         end
         AlertSend = true
         SetTimeout(Config.AlertCooldown, function()
             AlertSend = false
         end)
     end
-end
-
-function AlertPolice(data) -- cd_dispatch
-	TriggerServerEvent('police:server:policeAlert', 'Vehicle theft in progress')
 end
 
 function GetNearbyPed()
