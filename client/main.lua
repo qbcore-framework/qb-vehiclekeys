@@ -518,22 +518,7 @@ function AttemptPoliceAlert(type)
 end
 
 function AlertPolice(data) -- cd_dispatch
-    TriggerEvent('cd_dispatch:AddNotification', {
-        job_table = {'police', 'bcso', 'sasp'},
-        coords = data.coords,
-        title = '10-60 - Vehicle Theft',
-        message = "A "..data.sex.." was reported near "..data.street.." attempting to "..data.type.." a "..data.vehicle_colour.." "..data.vehicle_label.." ("..data.vehicle_plate..")",
-        flash = 0,
-        blip = {
-            sprite = data.sprite,
-            scale = 1.2,
-            colour = 3,
-            flashes = false,
-            title = '10-60 - Vehicle Theft',
-            time = (5*60*1000),
-            sound = 1,
-        }
-    })
+	TriggerServerEvent('police:server:policeAlert', 'Vehicle theft in progress')
 end
 
 function GetNearbyPed()
