@@ -79,7 +79,7 @@ function HasKeys(id, plate)
     return false
 end
 
-QBCore.Commands.Add("engine", "Toggle Engine", {}, false, function(source, args)
+QBCore.Commands.Add("engine", "Toggle Engine", {}, false, function(source, _)
 	TriggerClientEvent('qb-vehiclekeys:client:ToggleEngine', source)
 end)
 
@@ -90,7 +90,7 @@ end)
 
 QBCore.Commands.Add("addkeys", "Adds keys to a vehicle for someone.", {{name = "id", help = "Player ID"}, {name = "plate", help = "Plate"}}, true, function(source, args)
 	local src = source
-    if not args[1] or not args[2] then 
+    if not args[1] or not args[2] then
         TriggerClientEvent('QBCore:Notify', src, 'Fill out the player ID and Plate arguments.')
         return
     end
@@ -99,7 +99,7 @@ end, 'admin')
 
 QBCore.Commands.Add("removekeys", "Remove keys to a vehicle for someone.", {{name = "id", help = "Player ID"}, {name = "plate", help = "Plate"}}, true, function(source, args)
 	local src = source
-    if not args[1] or not args[2] then 
+    if not args[1] or not args[2] then
         TriggerClientEvent('QBCore:Notify', src, 'Fill out the player ID and Plate arguments.')
         return
     end

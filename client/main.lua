@@ -10,6 +10,7 @@ local canCarjack = true
 local AlertSend = false
 local lastPickedVehicle = nil
 local usingAdvanced = false
+local IsHotwiring = false
 
 -----------------------
 ----   Threads     ----
@@ -221,8 +222,8 @@ function GiveKeys(id, plate)
 end
 
 function GetKeys()
-    QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:GetVehicleKeys', function(_KeysList)
-        KeysList = _KeysList
+    QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:GetVehicleKeys', function(keysList)
+        KeysList = keysList
     end)
 end
 
@@ -306,13 +307,6 @@ function ToggleVehicleLocks(veh)
     end
 end
 
-function GetSeatPlayerIsIn(vehicle)
-    for seat=-1,GetVehicleModelNumberOfSeats(GetEntityModel(vehicle))-2 do
-        if GetPedInVehicleSeat(vehicle, seat) == PlayerPedId() then return seat end
-    end
-    return nil
-end
-
 function GetOtherPlayersInVehicle(vehicle)
     local otherPeds = {}
     for seat=-1,GetVehicleModelNumberOfSeats(GetEntityModel(vehicle))-2 do
@@ -355,7 +349,7 @@ function LockpickDoor(isAdvanced)
     if vehicle == nil or vehicle == 0 then return end
     if HasKeys(QBCore.Functions.GetPlate(vehicle)) then return end
     if #(pos - GetEntityCoords(vehicle)) > 2.5 then return end
-    if not (GetVehicleDoorLockStatus(vehicle) > 0) then return end
+    if GetVehicleDoorLockStatus(vehicle) <= 0 then return end
 
     usingAdvanced = isAdvanced
     TriggerEvent('qb-lockpick:client:openLockpick', lockpickFinish)
@@ -499,29 +493,13 @@ function AttemptPoliceAlert(type)
             chance = Config.PoliceNightAlertChance
         end
         if math.random() <= chance then
-           TriggerServerEvent('police:server:policeAlert', 'Vehicle theft in progress')
+           TriggerServerEvent('police:server:policeAlert', 'Vehicle theft in progress. Type: ' .. type)
         end
         AlertSend = true
         SetTimeout(Config.AlertCooldown, function()
             AlertSend = false
         end)
     end
-end
-
-function GetNearbyPed()
-    local retval = nil
-    local PlayerPeds = {}
-    for _, player in ipairs(GetActivePlayers()) do
-        local ped = GetPlayerPed(player)
-        PlayerPeds[#PlayerPeds+1] = ped
-    end
-    local player = PlayerPedId()
-    local coords = GetEntityCoords(player)
-    local closestPed, closestDistance = QBCore.Functions.GetClosestPed(coords, PlayerPeds)
-    if not IsEntityDead(closestPed) and closestDistance < 30.0 then
-        retval = closestPed
-    end
-    return retval
 end
 
 function MakePedFlee(ped)
