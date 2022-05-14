@@ -226,7 +226,6 @@ function GetKeys()
     end)
 end
 
-exports('HasKeys', HasKeys)
 function HasKeys(plate)
     return KeysList[plate]
 end
@@ -237,6 +236,7 @@ function loadAnimDict(dict)
         Wait(0)
     end
 end
+exports('HasKeys', HasKeys)
 
 function GetVehicleInDirection(coordFromOffset, coordToOffset)
     local ped = PlayerPedId()
