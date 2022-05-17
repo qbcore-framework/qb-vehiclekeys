@@ -79,7 +79,7 @@ function HasKeys(id, plate)
     return false
 end
 
-QBCore.Commands.Add("engine", "Toggle Engine", {}, false, function(source, _)
+QBCore.Commands.Add("engine", "Toggle Engine", {}, false, function(source)
 	TriggerClientEvent('qb-vehiclekeys:client:ToggleEngine', source)
 end)
 
