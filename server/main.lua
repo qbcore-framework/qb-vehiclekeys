@@ -90,7 +90,7 @@ end)
 
 QBCore.Commands.Add("addkeys", Lang:t('info.add_keys'), {{name = "id", help = "Player ID"}, {name = "plate", help = "Plate"}}, true, function(source, args)
 	local src = source
-    if not args[1] or not args[2] then 
+    if not args[1] or not args[2] then
         TriggerClientEvent('QBCore:Notify', src, Lang:t('info.fill_out'))
         return
     end
@@ -99,7 +99,7 @@ end, 'admin')
 
 QBCore.Commands.Add("removekeys", Lang:t('info.remove_keys'), {{name = "id", help = "Player ID"}, {name = "plate", help = "Plate"}}, true, function(source, args)
 	local src = source
-    if not args[1] or not args[2] then 
+    if not args[1] or not args[2] then
         TriggerClientEvent('QBCore:Notify', src, Lang:t('info.fill_out'))
         return
     end
