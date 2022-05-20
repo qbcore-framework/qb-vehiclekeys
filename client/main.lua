@@ -377,11 +377,11 @@ function lockpickFinish(success)
 
     if usingAdvanced then
         if chance <= Config.RemoveLockpickAdvanced then
-            TriggerServerEvent("inventory:server:breakLockpick", "advancedlockpick")
+            TriggerServerEvent("qb-vehiclekeys:server:breakLockpick", "advancedlockpick")
         end
     else
         if chance <= Config.RemoveLockpickNormal then
-            TriggerServerEvent("inventory:server:breakLockpick", "lockpick")
+            TriggerServerEvent("qb-vehiclekeys:server:breakLockpick", "lockpick")
         end
     end
 end
