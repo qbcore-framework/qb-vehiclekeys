@@ -227,10 +227,10 @@ function GetKeys()
     end)
 end
 
-exports('HasKeys', HasKeys)
 function HasKeys(plate)
     return KeysList[plate]
 end
+exports('HasKeys', HasKeys)
 
 function loadAnimDict(dict)
     while (not HasAnimDictLoaded(dict)) do
