@@ -36,6 +36,15 @@ RegisterNetEvent('qb-vehiclekeys:server:AcquireVehicleKeys', function(plate)
     GiveKeys(src, plate)
 end)
 
+RegisterNetEvent('qb-vehiclekeys:server:breakLockpick', function(itemName)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if not Player then return end
+    if not (itemName == "lockpick" or itemName == "advancedlockpick") then return end
+    if Player.Functions.RemoveItem(itemName, 1) then
+            TriggerClientEvent("inventory:client:ItemBox", source, QBCore.Shared.Items[itemName], "remove")
+    end
+end)
+
 QBCore.Functions.CreateCallback('qb-vehiclekeys:server:GetVehicleKeys', function(source, cb)
     local citizenid = QBCore.Functions.GetPlayer(source).PlayerData.citizenid
     local keysList = {}
