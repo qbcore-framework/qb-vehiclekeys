@@ -12,8 +12,8 @@ Config.minHotwireTime = 20000
 Config.maxHotwireTime = 40000
 
 Config.AlertCooldown = 10000 -- 10 seconds
-Config.PoliceAlertChance = 1.75 -- Chance of alerting police during the day
-Config.PoliceNightAlertChance = 1.50 -- Chance of alerting police at night (times:01-06)
+Config.PoliceAlertChance = 0.75 -- Chance of alerting police during the day
+Config.PoliceNightAlertChance = 0.50 -- Chance of alerting police at night (times:01-06)
 
 Config.ImmuneVehicles = { -- These vehicles cannot be jacked
     'stockade'
