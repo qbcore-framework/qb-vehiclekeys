@@ -244,7 +244,7 @@ function GetVehicleInDirection(coordFromOffset, coordToOffset)
     local coordFrom = GetOffsetFromEntityInWorldCoords(ped, coordFromOffset.x, coordFromOffset.y, coordFromOffset.z)
     local coordTo = GetOffsetFromEntityInWorldCoords(ped, coordToOffset.x, coordToOffset.y, coordToOffset.z)
 
-    local rayHandle = CastRayPointToPoint(coordFrom.x, coordFrom.y, coordFrom.z, coordTo.x, coordTo.y, coordTo.z, 10, GetPlayerPed(-1), 0)
+    local rayHandle = CastRayPointToPoint(coordFrom.x, coordFrom.y, coordFrom.z, coordTo.x, coordTo.y, coordTo.z, 10, PlayerPedId(), 0)
     local _, _, _, _, vehicle = GetShapeTestResult(rayHandle)
     return vehicle
 end
@@ -252,7 +252,7 @@ end
 -- If in vehicle returns that, otherwise tries 3 different raycasts to get the vehicle they are facing.
 -- Raycasts picture: https://i.imgur.com/FRED0kV.png
 function GetVehicle()
-    local vehicle = GetVehiclePedIsIn(GetPlayerPed(-1))
+    local vehicle = GetVehiclePedIsIn(PlayerPedId())
 
     local RaycastOffsetTable = {
         { ['fromOffset'] = vector3(0.0, 0.0, 0.0), ['toOffset'] = vector3(0.0, 20.0, -10.0) }, -- Waist to ground 45 degree angle
