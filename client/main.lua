@@ -31,10 +31,11 @@ CreateThread(function()
 
                 local driver = GetPedInVehicleSeat(entering, -1)
                 for _, veh in ipairs(Config.ImmuneVehicles) do
-                    if GetEntityModel(entering) == GetHashKey(veh) then
+                    if GetEntityModel(entering) == joaat(veh) then
                         carIsImmune = true
                     end
                 end
+                -- Driven vehicle logic
                 if driver ~= 0 and not IsPedAPlayer(driver) and not HasKeys(plate) and not carIsImmune then
                     if IsEntityDead(driver) then
                         if not isTakingKeys then
@@ -52,11 +53,23 @@ CreateThread(function()
                                 isTakingKeys = false
                             end)
                         end
-                    else
+                    elseif Config.LockNPCDrivingCars then
                         SetVehicleDoorsLocked(entering, 2)
+                    else
+                        SetVehicleDoorsLocked(entering, 1)
+                        TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', plate)
+                        local pedsInVehicle = GetPedsInVehicle(entering)
+                        for _, pedInVehicle in pairs(pedsInVehicle) do
+                            MakePedFlee(pedInVehicle)
+                        end
                     end
+                -- Parked car logic
                 elseif driver == 0 and entering ~= lastPickedVehicle and not HasKeys(plate) and not isTakingKeys then
-                    SetVehicleDoorsLocked(entering, 2)
+                    if Config.LockNPCParkedCars then
+                        SetVehicleDoorsLocked(entering, 2)
+                    else
+                        SetVehicleDoorsLocked(entering, 1)
+                    end
                 end
             end
 
@@ -67,7 +80,7 @@ CreateThread(function()
                 local plate = QBCore.Functions.GetPlate(vehicle)
 
                 if GetPedInVehicleSeat(vehicle, -1) == PlayerPedId() and not HasKeys(plate) and not isBlacklistedVehicle(vehicle) then
-                    sleep = 5
+                    sleep = 0
 
                     local vehiclePos = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, 1.0, 0.5)
                     DrawText3D(vehiclePos.x, vehiclePos.y, vehiclePos.z, "~g~[H]~w~ - Search for Keys")
@@ -79,7 +92,6 @@ CreateThread(function()
                 end
             end
 
-
             if canCarjack then
                 local playerid = PlayerId()
                 local aiming, target = GetEntityPlayerIsFreeAimingAt(playerid)
@@ -87,7 +99,7 @@ CreateThread(function()
                     if DoesEntityExist(target) and IsPedInAnyVehicle(target, false) and not IsEntityDead(target) and not IsPedAPlayer(target) then
                         local targetveh = GetVehiclePedIsIn(target)
                         for _, veh in ipairs(Config.ImmuneVehicles) do
-                            if GetEntityModel(targetveh) == GetHashKey(veh) then
+                            if GetEntityModel(targetveh) == joaat(veh) then
                                 carIsImmune = true
                             end
                         end
