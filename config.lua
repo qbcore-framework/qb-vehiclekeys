@@ -1,4 +1,6 @@
 Config = {}
+Config.LockNPCDrivingCars = true  -- Lock state for NPC cars being driven by NPCs [true = locked, false = unlocked]
+Config.LockNPCParkedCars = true -- Lock state for NPC parked cars [true = locked, false = unlocked]
 Config.HotwireChance = 0.5 -- Chance for successful hotwire or not
 
 Config.RemoveLockpickNormal = 0.5 -- Chance to remove lockpick on fail
