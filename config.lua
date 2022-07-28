@@ -1,6 +1,6 @@
 Config = {}
-Config.LockNPCDrivingCars = false
-Config.LockNPCParkedCars = false
+Config.LockNPCDrivingCars = true
+Config.LockNPCParkedCars = true
 Config.HotwireChance = 0.5 -- Chance for successful hotwire or not
 
 Config.RemoveLockpickNormal = 0.5 -- Chance to remove lockpick on fail
