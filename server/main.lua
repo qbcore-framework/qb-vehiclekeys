@@ -46,8 +46,7 @@ RegisterNetEvent('qb-vehiclekeys:server:breakLockpick', function(itemName)
 end)
 
 ---Vehicle Lock Status sync
-RegisterNetEvent('vehicle:server:locksync')
-AddEventHandler('vehicle:server:locksync', function(veh,status)
+RegisterNetEvent('vehicle:server:locksync', function(veh,status)
     TriggerClientEvent('vehicle:client:locksync', -1, veh,status)
 end)
 

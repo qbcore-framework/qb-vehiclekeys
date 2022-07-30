@@ -202,8 +202,7 @@ RegisterNetEvent('lockpicks:UseLockpick', function(isAdvanced)
 end)
 
 ---Sync Vehicle Lock to all players
-RegisterNetEvent('vehicle:client:locksync')
-AddEventHandler('vehicle:client:locksync', function(veh,status)
+RegisterNetEvent('vehicle:client:locksync', function(veh,status)
     SetVehicleDoorsLocked(veh, status)
 end)
 
