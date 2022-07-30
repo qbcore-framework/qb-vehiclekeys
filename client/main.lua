@@ -39,7 +39,7 @@ CreateThread(function()
                     if IsEntityDead(driver) then
                         if not isTakingKeys then
                             isTakingKeys = true
-                            SetVehicleDoorsLocked(entering, 1)
+                            TriggerServerEvent('vehicle:server:locksync',entering, 1)
                             QBCore.Functions.Progressbar("steal_keys", "Taking keys from body...", 2500, false, false, {
                                 disableMovement = false,
                                 disableCarMovement = true,
@@ -53,10 +53,10 @@ CreateThread(function()
                             end)
                         end
                     else
-                        SetVehicleDoorsLocked(entering, 2)
+                        TriggerServerEvent('vehicle:server:locksync',entering, 2)
                     end
                 elseif driver == 0 and entering ~= lastPickedVehicle and not HasKeys(plate) and not isTakingKeys then
-                    SetVehicleDoorsLocked(entering, 2)
+                    TriggerServerEvent('vehicle:server:locksync',entering, 2)
                 end
             end
 
@@ -201,6 +201,12 @@ RegisterNetEvent('lockpicks:UseLockpick', function(isAdvanced)
     LockpickDoor(isAdvanced)
 end)
 
+---Sync Vehicle Lock to all players
+RegisterNetEvent('vehicle:client:locksync')
+AddEventHandler('vehicle:client:locksync', function(veh,status)
+    SetVehicleDoorsLocked(veh, status)
+end)
+
 
 -- Backwards Compatibility ONLY -- Remove at some point --
 RegisterNetEvent('vehiclekeys:client:SetOwner', function(plate)
@@ -284,10 +290,10 @@ function ToggleVehicleLocks(veh)
 
                 NetworkRequestControlOfEntity(veh)
                 if vehLockStatus == 1 then
-                    SetVehicleDoorsLocked(veh, 2)
+                    TriggerServerEvent('vehicle:server:locksync',veh, 2)
                     QBCore.Functions.Notify("Vehicle locked!", "primary")
                 else
-                    SetVehicleDoorsLocked(veh, 1)
+                    TriggerServerEvent('vehicle:server:locksync',veh, 1)
                     QBCore.Functions.Notify("Vehicle unlocked!", "success")
                 end
 
@@ -302,7 +308,7 @@ function ToggleVehicleLocks(veh)
                 QBCore.Functions.Notify("You don't have keys to this vehicle.", 'error')
             end
         else
-            SetVehicleDoorsLocked(veh, 1)
+            TriggerServerEvent('vehicle:server:locksync',veh, 1)
         end
     end
 end
@@ -367,7 +373,7 @@ function lockpickFinish(success)
             TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', QBCore.Functions.GetPlate(vehicle))
         else
             QBCore.Functions.Notify('You managed to pick the door lock open!', 'success')
-            SetVehicleDoorsLocked(vehicle, 1)
+            TriggerServerEvent('vehicle:server:locksync',vehicle, 1)
         end
 
     else
