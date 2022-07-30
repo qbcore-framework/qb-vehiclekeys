@@ -40,7 +40,7 @@ CreateThread(function()
                     if IsEntityDead(driver) then
                         if not isTakingKeys then
                             isTakingKeys = true
-                            SetVehicleDoorsLocked(entering, 1)
+                            TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(entering), 1)
                             QBCore.Functions.Progressbar("steal_keys", "Taking keys from body...", 2500, false, false, {
                                 disableMovement = false,
                                 disableCarMovement = true,
@@ -54,9 +54,9 @@ CreateThread(function()
                             end)
                         end
                     elseif Config.LockNPCDrivingCars then
-                        SetVehicleDoorsLocked(entering, 2)
+                        TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(entering), 2)
                     else
-                        SetVehicleDoorsLocked(entering, 1)
+                        TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(entering), 1)
                         TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', plate)
                         local pedsInVehicle = GetPedsInVehicle(entering)
                         for _, pedInVehicle in pairs(pedsInVehicle) do
@@ -66,9 +66,9 @@ CreateThread(function()
                 -- Parked car logic
                 elseif driver == 0 and entering ~= lastPickedVehicle and not HasKeys(plate) and not isTakingKeys then
                     if Config.LockNPCParkedCars then
-                        SetVehicleDoorsLocked(entering, 2)
+                        TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(entering), 2)
                     else
-                        SetVehicleDoorsLocked(entering, 1)
+                        TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(entering), 1)
                     end
                 end
             end
@@ -296,10 +296,10 @@ function ToggleVehicleLocks(veh)
 
                 NetworkRequestControlOfEntity(veh)
                 if vehLockStatus == 1 then
-                    SetVehicleDoorsLocked(veh, 2)
+                    TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(veh), 2)
                     QBCore.Functions.Notify("Vehicle locked!", "primary")
                 else
-                    SetVehicleDoorsLocked(veh, 1)
+                    TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(veh), 1)
                     QBCore.Functions.Notify("Vehicle unlocked!", "success")
                 end
 
@@ -314,7 +314,7 @@ function ToggleVehicleLocks(veh)
                 QBCore.Functions.Notify("You don't have keys to this vehicle.", 'error')
             end
         else
-            SetVehicleDoorsLocked(veh, 1)
+            TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(veh), 1)
         end
     end
 end
@@ -379,7 +379,7 @@ function lockpickFinish(success)
             TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', QBCore.Functions.GetPlate(vehicle))
         else
             QBCore.Functions.Notify('You managed to pick the door lock open!', 'success')
-            SetVehicleDoorsLocked(vehicle, 1)
+            TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', vehicle, 1)
         end
 
     else
