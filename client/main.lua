@@ -58,9 +58,13 @@ CreateThread(function()
                     else
                         TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(entering), 1)
                         TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', plate)
+
+                        --Make passengers flee
                         local pedsInVehicle = GetPedsInVehicle(entering)
                         for _, pedInVehicle in pairs(pedsInVehicle) do
-                            MakePedFlee(pedInVehicle)
+                            if pedInVehicle ~= GetPedInVehicleSeat(entering, -1) then
+                                MakePedFlee(pedInVehicle)
+                            end
                         end
                     end
                 -- Parked car logic
