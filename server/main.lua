@@ -18,7 +18,7 @@ RegisterNetEvent('qb-vehiclekeys:server:GiveVehicleKeys', function(receiver, pla
     local giver = source
 
     if HasKeys(giver, plate) then
-        TriggerClientEvent('QBCore:Notify', giver, "You hand over the keys.", 'success')
+        TriggerClientEvent('QBCore:Notify', giver, Lang:t("notify.vgkeys"), 'success')
         if type(receiver) == 'table' then
             for _,r in ipairs(receiver) do
                 GiveKeys(receiver[r], plate)
@@ -27,7 +27,7 @@ RegisterNetEvent('qb-vehiclekeys:server:GiveVehicleKeys', function(receiver, pla
             GiveKeys(receiver, plate)
         end
     else
-        TriggerClientEvent('QBCore:Notify', giver, "You don't have keys to this vehicle.", "error")
+        TriggerClientEvent('QBCore:Notify', giver, Lang:t("notify.ydhk"), "error")
     end
 end)
 
@@ -66,7 +66,7 @@ function GiveKeys(id, plate)
     if not VehicleList[plate] then VehicleList[plate] = {} end
     VehicleList[plate][citizenid] = true
     
-    TriggerClientEvent('QBCore:Notify', id, "You get keys to the vehicle!")
+    TriggerClientEvent('QBCore:Notify', id, Lang:t("notify.vgetkeys"))
     TriggerClientEvent('qb-vehiclekeys:client:AddKeys', id, plate)
 end
 
@@ -88,28 +88,28 @@ function HasKeys(id, plate)
     return false
 end
 
-QBCore.Commands.Add("engine", "Toggle Engine", {}, false, function(source)
+QBCore.Commands.Add("engine", Lang:t("addcom.engine"), {}, false, function(source)
 	TriggerClientEvent('qb-vehiclekeys:client:ToggleEngine', source)
 end)
 
-QBCore.Commands.Add("givekeys", "Hand over the keys to someone. If no ID, gives to closest person or everyone in the vehicle.", {{name = "id", help = "Player ID"}}, false, function(source, args)
+QBCore.Commands.Add("givekeys", Lang:t("addcom.givekeys"), {{name = Lang:t("addcom.givekeys_id"), help = Lang:t("addcom.givekeys_id_help")}}, false, function(source, args)
 	local src = source
     TriggerClientEvent('qb-vehiclekeys:client:GiveKeys', src, tonumber(args[1]))
 end)
 
-QBCore.Commands.Add("addkeys", "Adds keys to a vehicle for someone.", {{name = "id", help = "Player ID"}, {name = "plate", help = "Plate"}}, true, function(source, args)
+QBCore.Commands.Add("addkeys", Lang:t("addcom.addkeys"), {{name = Lang:t("addcom.addkeys_id"), help = Lang:t("addcom.addkeys_id_help")}, {name = Lang:t("addcom.addkeys_plate"), help = Lang:t("addcom.addkeys_plate_help")}}, true, function(source, args)
 	local src = source
     if not args[1] or not args[2] then
-        TriggerClientEvent('QBCore:Notify', src, 'Fill out the player ID and Plate arguments.')
+        TriggerClientEvent('QBCore:Notify', src, Lang:t("notify.fpid"))
         return
     end
     GiveKeys(tonumber(args[1]), args[2])
 end, 'admin')
 
-QBCore.Commands.Add("removekeys", "Remove keys to a vehicle for someone.", {{name = "id", help = "Player ID"}, {name = "plate", help = "Plate"}}, true, function(source, args)
+QBCore.Commands.Add("removekeys", Lang:t("addcom.rkeys"), {{name = Lang:t("addcom.rkeys_id"), help = Lang:t("addcom.rkeys_id_help")}, {name = Lang:t("addcom.rkeys_plate"), help = Lang:t("addcom.rkeys_plate_help")}}, true, function(source, args)
 	local src = source
     if not args[1] or not args[2] then
-        TriggerClientEvent('QBCore:Notify', src, 'Fill out the player ID and Plate arguments.')
+        TriggerClientEvent('QBCore:Notify', src, Lang:t("notify.fpid"))
         return
     end
     RemoveKeys(tonumber(args[1]), args[2])
