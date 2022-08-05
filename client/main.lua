@@ -40,8 +40,9 @@ CreateThread(function()
                     if IsEntityDead(driver) then
                         if not isTakingKeys then
                             isTakingKeys = true
+
                             TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(entering), 1)
-                            QBCore.Functions.Progressbar("steal_keys", "Taking keys from body...", 2500, false, false, {
+                            QBCore.Functions.Progressbar("steal_keys", Lang:t("progress.takekeys"), 2500, false, false, {
                                 disableMovement = false,
                                 disableCarMovement = true,
                                 disableMouse = false,
@@ -87,7 +88,7 @@ CreateThread(function()
                     sleep = 0
 
                     local vehiclePos = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, 1.0, 0.5)
-                    DrawText3D(vehiclePos.x, vehiclePos.y, vehiclePos.z, "~g~[H]~w~ - Search for Keys")
+                    DrawText3D(vehiclePos.x, vehiclePos.y, vehiclePos.z, Lang:t("info.skeys"))
                     SetVehicleEngineOn(vehicle, false, false, true)
 
                     if IsControlJustPressed(0, 74) then
@@ -138,7 +139,7 @@ end
 ---- Client Events ----
 -----------------------
 
-RegisterKeyMapping('togglelocks', 'Toggle Vehicle Locks', 'keyboard', 'L')
+RegisterKeyMapping('togglelocks', Lang:t("info.tlock"), 'keyboard', 'L')
 RegisterCommand('togglelocks', function()
     ToggleVehicleLocks(GetVehicle())
 end)
@@ -208,7 +209,7 @@ RegisterNetEvent('qb-vehiclekeys:client:GiveKeys', function(id)
                 end
             end
         else
-            QBCore.Functions.Notify("You don't have keys to this vehicle.", 'error')
+            QBCore.Functions.Notify(Lang:t("notify.ydhk"), 'error')
         end
     end
 end)
@@ -233,7 +234,7 @@ function GiveKeys(id, plate)
     if distance < 1.5 and distance > 0.0 then
         TriggerServerEvent('qb-vehiclekeys:server:GiveVehicleKeys', id, plate)
     else
-        QBCore.Functions.Notify('There is nobody nearby to hand keys to.','error')
+        QBCore.Functions.Notify(Lang:t("notify.nonear"),'error')
     end
 end
 
@@ -301,10 +302,10 @@ function ToggleVehicleLocks(veh)
                 NetworkRequestControlOfEntity(veh)
                 if vehLockStatus == 1 then
                     TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(veh), 2)
-                    QBCore.Functions.Notify("Vehicle locked!", "primary")
+                    QBCore.Functions.Notify(Lang:t("notify.vlock"), "primary")
                 else
                     TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(veh), 1)
-                    QBCore.Functions.Notify("Vehicle unlocked!", "success")
+                    QBCore.Functions.Notify(Lang:t("notify.vunlock"), "success")
                 end
 
                 SetVehicleLights(veh, 2)
@@ -315,7 +316,7 @@ function ToggleVehicleLocks(veh)
                 Wait(300)
                 ClearPedTasks(ped)
             else
-                QBCore.Functions.Notify("You don't have keys to this vehicle.", 'error')
+                QBCore.Functions.Notify(Lang:t("notify.ydhk"), 'error')
             end
         else
             TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(veh), 1)
@@ -382,7 +383,7 @@ function lockpickFinish(success)
         if GetPedInVehicleSeat(vehicle, -1) == PlayerPedId() then
             TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', QBCore.Functions.GetPlate(vehicle))
         else
-            QBCore.Functions.Notify('You managed to pick the door lock open!', 'success')
+            QBCore.Functions.Notify(Lang:t("notify.vlockpick"), 'success')
             TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', vehicle, 1)
         end
 
@@ -409,7 +410,7 @@ function Hotwire(vehicle, plate)
 
     SetVehicleAlarm(vehicle, true)
     SetVehicleAlarmTimeLeft(vehicle, hotwireTime)
-    QBCore.Functions.Progressbar("hotwire_vehicle", "Searching for the car keys...", hotwireTime, false, true, {
+    QBCore.Functions.Progressbar("hotwire_vehicle", Lang:t("progress.hskeys"), hotwireTime, false, true, {
         disableMovement = true,
         disableCarMovement = true,
         disableMouse = false,
@@ -424,7 +425,7 @@ function Hotwire(vehicle, plate)
         if (math.random() <= Config.HotwireChance) then
             TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', plate)
         else
-            QBCore.Functions.Notify("You fail to find the keys and get frustrated.", "error")
+            QBCore.Functions.Notify(Lang:t("notify.fvlockpick"), "error")
         end
         Wait(Config.TimeBetweenHotwires)
         IsHotwiring = false
@@ -465,7 +466,7 @@ function CarjackVehicle(target)
         end
     end)
 
-    QBCore.Functions.Progressbar("rob_keys", "Attempting Carjacking..", Config.CarjackingTime, false, true, {}, {}, {}, {}, function()
+    QBCore.Functions.Progressbar("rob_keys", Lang:t("progress.acjack"), Config.CarjackingTime, false, true, {}, {}, {}, {}, function()
         local hasWeapon, weaponHash = GetCurrentPedWeapon(PlayerPedId(), true)
         if hasWeapon and isCarjacking then
             if math.random() <= Config.CarjackChance[tostring(GetWeapontypeGroup(weaponHash))] then
@@ -509,7 +510,7 @@ function AttemptPoliceAlert(type)
             chance = Config.PoliceNightAlertChance
         end
         if math.random() <= chance then
-           TriggerServerEvent('police:server:policeAlert', 'Vehicle theft in progress. Type: ' .. type)
+           TriggerServerEvent('police:server:policeAlert', Lang:t("info.palert") .. type)
         end
         AlertSend = true
         SetTimeout(Config.AlertCooldown, function()
