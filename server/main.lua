@@ -45,6 +45,10 @@ RegisterNetEvent('qb-vehiclekeys:server:breakLockpick', function(itemName)
     end
 end)
 
+RegisterNetEvent('qb-vehiclekeys:server:setVehLockState', function(vehNetId, state)
+    SetVehicleDoorsLocked(NetworkGetEntityFromNetworkId(vehNetId), state)
+end)
+
 QBCore.Functions.CreateCallback('qb-vehiclekeys:server:GetVehicleKeys', function(source, cb)
     local citizenid = QBCore.Functions.GetPlayer(source).PlayerData.citizenid
     local keysList = {}
