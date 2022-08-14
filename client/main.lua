@@ -196,7 +196,7 @@ RegisterNetEvent('qb-vehiclekeys:client:GiveKeys', function(id)
     if targetVehicle then
         local targetPlate = QBCore.Functions.GetPlate(targetVehicle)
         if HasKeys(targetPlate) then
-            if id ~= nil then -- Give keys to specific ID
+            if id and type(id) == "number" then -- Give keys to specific ID
                 GiveKeys(id, targetPlate)
             else
                 if IsPedSittingInVehicle(PlayerPedId(), targetVehicle) then -- Give keys to everyone in vehicle
