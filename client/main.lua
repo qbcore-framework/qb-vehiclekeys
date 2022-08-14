@@ -369,10 +369,10 @@ function LockpickDoor(isAdvanced)
     if GetVehicleDoorLockStatus(vehicle) <= 0 then return end
 
     usingAdvanced = isAdvanced
-    TriggerEvent('qb-lockpick:client:openLockpick', lockpickFinish)
+    Config.LockPickDoorEvent()
 end
 
-function lockpickFinish(success)
+function LockpickFinishCallback(success)
     local vehicle = QBCore.Functions.GetClosestVehicle()
 
     local chance = math.random()
