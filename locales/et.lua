@@ -9,6 +9,7 @@ local Translations = {
         vgkeys = 'Annad võtmed üle.',
         vgetkeys = 'Saate auto võtmed!',
         fpid = 'Täitke mängija ID ja plaadi argumendid',
+        cjackfail = 'Autovargamine ebaõnnestus!',
     },
     progress = {
         takekeys = 'Võtmete kehast võtmine...',
