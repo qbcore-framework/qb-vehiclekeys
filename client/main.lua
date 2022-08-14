@@ -433,9 +433,9 @@ function Hotwire(vehicle, plate)
         StopAnimTask(ped, "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1.0)
         IsHotwiring = false
     end)
-
-    Wait(10000)
-    AttemptPoliceAlert("steal")
+    SetTimeout(10000, function()
+        AttemptPoliceAlert("steal")
+    end)
 end
 
 function CarjackVehicle(target)
