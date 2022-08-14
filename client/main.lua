@@ -469,7 +469,15 @@ function CarjackVehicle(target)
     QBCore.Functions.Progressbar("rob_keys", Lang:t("progress.acjack"), Config.CarjackingTime, false, true, {}, {}, {}, {}, function()
         local hasWeapon, weaponHash = GetCurrentPedWeapon(PlayerPedId(), true)
         if hasWeapon and isCarjacking then
-            if math.random() <= Config.CarjackChance[tostring(GetWeapontypeGroup(weaponHash))] then
+
+            local carjackChance
+            if Config.CarjackChance[tostring(GetWeapontypeGroup(weaponHash))] then
+                carjackChance = Config.CarjackChance[tostring(GetWeapontypeGroup(weaponHash))]
+            else
+                carjackChance = 0.5
+            end
+
+            if math.random() <= carjackChance then
                 local plate = QBCore.Functions.GetPlate(vehicle)
 
                 for p=1,#occupants do
