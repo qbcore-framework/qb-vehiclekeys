@@ -369,10 +369,10 @@ function LockpickDoor(isAdvanced)
     if GetVehicleDoorLockStatus(vehicle) <= 0 then return end
 
     usingAdvanced = isAdvanced
-    TriggerEvent('qb-lockpick:client:openLockpick', lockpickFinish)
+    Config.LockPickDoorEvent()
 end
 
-function lockpickFinish(success)
+function LockpickFinishCallback(success)
     local vehicle = QBCore.Functions.GetClosestVehicle()
 
     local chance = math.random()
@@ -384,7 +384,7 @@ function lockpickFinish(success)
             TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', QBCore.Functions.GetPlate(vehicle))
         else
             QBCore.Functions.Notify(Lang:t("notify.vlockpick"), 'success')
-            TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', vehicle, 1)
+            TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(vehicle), 1)
         end
 
     else
@@ -433,9 +433,9 @@ function Hotwire(vehicle, plate)
         StopAnimTask(ped, "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1.0)
         IsHotwiring = false
     end)
-
-    Wait(10000)
-    AttemptPoliceAlert("steal")
+    SetTimeout(10000, function()
+        AttemptPoliceAlert("steal")
+    end)
 end
 
 function CarjackVehicle(target)
@@ -469,7 +469,15 @@ function CarjackVehicle(target)
     QBCore.Functions.Progressbar("rob_keys", Lang:t("progress.acjack"), Config.CarjackingTime, false, true, {}, {}, {}, {}, function()
         local hasWeapon, weaponHash = GetCurrentPedWeapon(PlayerPedId(), true)
         if hasWeapon and isCarjacking then
-            if math.random() <= Config.CarjackChance[tostring(GetWeapontypeGroup(weaponHash))] then
+
+            local carjackChance
+            if Config.CarjackChance[tostring(GetWeapontypeGroup(weaponHash))] then
+                carjackChance = Config.CarjackChance[tostring(GetWeapontypeGroup(weaponHash))]
+            else
+                carjackChance = 0.5
+            end
+
+            if math.random() <= carjackChance then
                 local plate = QBCore.Functions.GetPlate(vehicle)
 
                 for p=1,#occupants do
@@ -486,6 +494,7 @@ function CarjackVehicle(target)
                 TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
                 TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', plate)
             else
+                QBCore.Functions.Notify(Lang:t("notify.cjackfail"), "error")
                 MakePedFlee(target)
                 TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
             end

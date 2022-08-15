@@ -9,6 +9,7 @@ local Translations = {
         vgkeys = 'You hand over the keys.',
         vgetkeys = 'You get keys to the vehicle!',
         fpid = 'Fill out the player ID and Plate arguments',
+        cjackfail = 'Carjacking failed!',
     },
     progress = {
         takekeys = 'Taking keys from body...',

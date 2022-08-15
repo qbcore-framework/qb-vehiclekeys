@@ -9,6 +9,7 @@ local Translations = {
         vgkeys = 'Sie geben die Schlüssel ab.',
         vgetkeys = 'Sie erhalten die Schlüssel für das Fahrzeug!',
         fpid = 'Füllen Sie die Argumente für die Bürger-ID und das Kennzeichen aus.',
+        cjackfail = 'Carjacking fehlgeschlagen!',
     },
     progress = {
         takekeys = 'Fahrzeugschlüssel abnehmen...',
