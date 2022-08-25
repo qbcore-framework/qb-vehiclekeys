@@ -33,8 +33,11 @@ end)
 
 RegisterNetEvent('qb-vehiclekeys:server:AcquireVehicleKeys', function(plate)
     local src = source
-    GiveKeys(src, plate)
+    if not HasKeys(src, plate) then
+        GiveKeys(src, plate)
+    end
 end)
+
 
 RegisterNetEvent('qb-vehiclekeys:server:breakLockpick', function(itemName)
     local Player = QBCore.Functions.GetPlayer(source)
