@@ -288,24 +288,24 @@ function GetVehicle()
 end
 
 function AreKeysJobShared(veh)
-	local vehName = GetDisplayNameFromVehicleModel(GetEntityModel(veh))
-	local vehPlate = GetVehicleNumberPlateText(veh)
-	local jobName = QBCore.Functions.GetPlayerData().job.name
-	local onDuty = QBCore.Functions.GetPlayerData().job.onduty
-	for job, v in pairs(Config.SharedKeys) do
-		if job == jobName then
-			if Config.SharedKeys[job].requireOnduty and not onDuty then return false end
-			for _, vehicle in pairs(v.vehicles) do
-				if string.upper(vehicle) == vehName then
-					if not HasKeys(vehPlate) then
-						TriggerServerEvent("qb-vehiclekeys:server:AcquireVehicleKeys", vehPlate)
-					end
-					return true
-				end
-			end
-		end
-	end
-	return false
+    local vehName = GetDisplayNameFromVehicleModel(GetEntityModel(veh))
+    local vehPlate = GetVehicleNumberPlateText(veh)
+    local jobName = QBCore.Functions.GetPlayerData().job.name
+    local onDuty = QBCore.Functions.GetPlayerData().job.onduty
+    for job, v in pairs(Config.SharedKeys) do
+        if job == jobName then
+	    if Config.SharedKeys[job].requireOnduty and not onDuty then return false end
+	    for _, vehicle in pairs(v.vehicles) do
+	        if string.upper(vehicle) == vehName then
+		    if not HasKeys(vehPlate) then
+		        TriggerServerEvent("qb-vehiclekeys:server:AcquireVehicleKeys", vehPlate)
+		    end
+		    return true
+	        end
+            end
+        end
+    end
+    return false
 end
 
 function ToggleVehicleLocks(veh)
