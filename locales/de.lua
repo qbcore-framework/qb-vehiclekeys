@@ -20,9 +20,9 @@ local Translations = {
         skeys = '~g~[H]~w~ - Schlüssel suchen',
         tlock = 'Motor ein und ausschalten',
         palert = 'Fahrzeugdiebstahl im Gange. Typ: ',
+        engine = 'Motor ein und ausschalten',
     },
     addcom = {
-        engine = 'Motor ein und ausschalten',
         givekeys = 'Übergeben Sie die Schlüssel an jemanden. Wenn Sie keinen Ausweis haben, geben Sie ihn der nächstgelegenen Person oder allen Personen im Fahrzeug.',
         givekeys_id = 'id',
         givekeys_id_help = 'Bürger ID',

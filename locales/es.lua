@@ -20,9 +20,9 @@ local Translations = {
         skeys = '[H] - Buscar llaves',
         tlock = 'Habilitar/deshabilitar seguro de carro',
         palert = 'Robo de vehículo en progreso. Tipo: ',
+        engine = 'Encender/apagar motor',
     },
     addcom = {
-        engine = 'Encender/apagar motor',
         givekeys = 'Entregar llaves a alguien. Si no hay ID, entregar a la persona más cercana o a todos en el vehículo.',
         givekeys_id = 'id',
         givekeys_id_help = 'ID de jugador',

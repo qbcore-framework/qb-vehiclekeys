@@ -92,10 +92,6 @@ function HasKeys(id, plate)
     return false
 end
 
-QBCore.Commands.Add("engine", Lang:t("addcom.engine"), {}, false, function(source)
-	TriggerClientEvent('qb-vehiclekeys:client:ToggleEngine', source)
-end)
-
 QBCore.Commands.Add("givekeys", Lang:t("addcom.givekeys"), {{name = Lang:t("addcom.givekeys_id"), help = Lang:t("addcom.givekeys_id_help")}}, false, function(source, args)
 	local src = source
     TriggerClientEvent('qb-vehiclekeys:client:GiveKeys', src, tonumber(args[1]))

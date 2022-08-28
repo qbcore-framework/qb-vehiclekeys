@@ -20,9 +20,9 @@ local Translations = {
         skeys = '~g~[H]~w~ - Search for Keys',
         tlock = 'Toggle Vehicle Locks',
         palert = 'Vehicle theft in progress. Type: ',
+        engine = 'Toggle Engine',
     },
     addcom = {
-        engine = 'Toggle Engine',
         givekeys = 'Hand over the keys to someone. If no ID, gives to closest person or everyone in the vehicle.',
         givekeys_id = 'id',
         givekeys_id_help = 'Player ID',
