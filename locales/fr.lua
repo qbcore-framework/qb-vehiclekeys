@@ -20,7 +20,7 @@ local Translations = {
         skeys = '~g~[H]~w~ - Chercher les clés',
         tlock = 'Verrouiller/Déverrouiller le véhicule',
         palert = 'Vol de véhicule en cours. Type: ',
-        engine = 'Allumer/Eteindre le moteur',        
+        engine = 'Allumer/Eteindre le moteur',
     },
     addcom = {
         givekeys = 'Donner les clés à quelqu\'un. Si aucun ID, donne à la personne la plus proche ou à tout le monde dans le véhicule.',
