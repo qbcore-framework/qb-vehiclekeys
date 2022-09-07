@@ -26,17 +26,21 @@ CreateThread(function()
             local entering = GetVehiclePedIsTryingToEnter(ped)
             local carIsImmune = false
             if entering ~= 0 and not isBlacklistedVehicle(entering) then
-                sleep = 2000
+                sleep = 3000
                 local plate = QBCore.Functions.GetPlate(entering)
-
+                local enteringEntity = Entity(entering)
                 local driver = GetPedInVehicleSeat(entering, -1)
                 for _, veh in ipairs(Config.ImmuneVehicles) do
                     if GetEntityModel(entering) == joaat(veh) then
                         carIsImmune = true
                     end
                 end
-                -- Driven vehicle logic
-                if driver ~= 0 and not IsPedAPlayer(driver) and not HasKeys(plate) and not carIsImmune then
+
+                -- Check if the car we are entering is player owned
+                TriggerServerEvent("qb-vehiclekeys:server:checkPlayerOwned", plate, NetworkGetNetworkIdFromEntity(entering))
+
+                -- NPC Driven vehicle logic
+                if driver ~= 0 and not enteringEntity.state.playerOwned and not HasKeys(plate) and not carIsImmune then
                     if IsEntityDead(driver) then
                         if not isTakingKeys then
                             isTakingKeys = true
@@ -69,7 +73,7 @@ CreateThread(function()
                         end
                     end
                 -- Parked car logic
-                elseif driver == 0 and entering ~= lastPickedVehicle and not HasKeys(plate) and not isTakingKeys then
+                elseif not enteringEntity.state.playerOwned and driver == 0 and entering ~= lastPickedVehicle and not HasKeys(plate) and not isTakingKeys then
                     if Config.LockNPCParkedCars then
                         TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(entering), 2)
                     else
@@ -325,7 +329,7 @@ function ToggleVehicleLocks(veh)
 
                 TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "lock", 0.3)
 
-                NetworkRequestControlOfEntity(veh)
+                -- NetworkRequestControlOfEntity(veh)
                 if vehLockStatus == 1 then
                     TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(veh), 2)
                     QBCore.Functions.Notify(Lang:t("notify.vlock"), "primary")
