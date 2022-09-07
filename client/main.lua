@@ -37,7 +37,7 @@ CreateThread(function()
                 end
 
                 -- Check if the car we are entering is player owned
-                TriggerServerCallback("qb-vehiclekeys:server:checkPlayerOwned", function(playerOwned)
+                QBCore.Functions.TriggerCallback("qb-vehiclekeys:server:checkPlayerOwned", function(playerOwned)
 
                     -- NPC Driven vehicle logic
                     if driver ~= 0 and not playerOwned and not HasKeys(plate) and not carIsImmune then
