@@ -12,15 +12,6 @@ local VehicleList = {}
 ---- Server Events ----
 -----------------------
 
--- This event checks if the car is player owned by seeing if any player owns keys for this vehicle
--- If the vehicle is player owned, then we set the playerOwned state bag to true
-RegisterNetEvent("qb-vehiclekeys:server:checkPlayerOwned", function(plate, vehNetId)
-    local vehEntity = Entity(NetworkGetEntityFromNetworkId(vehNetId))
-    if not vehEntity.state.playerOwned and VehicleList[plate] then
-        vehEntity.state.playerOwned = true
-    end
-end)
-
 -- Event to give keys. receiver can either be a single id, or a table of ids.
 -- Must already have keys to the vehicle, trigger the event from the server, or pass forcegive paramter as true.
 RegisterNetEvent('qb-vehiclekeys:server:GiveVehicleKeys', function(receiver, plate)
@@ -67,6 +58,16 @@ QBCore.Functions.CreateCallback('qb-vehiclekeys:server:GetVehicleKeys', function
         end
     end
     cb(keysList)
+end)
+
+-- This Callback checks if the car is player owned by seeing if any player owns keys for this vehicle
+-- If the vehicle is player owned, then we set the playerOwned state bag to true
+QBCore.Functions.CreateCallback("qb-vehiclekeys:server:checkPlayerOwned", function(plate, vehNetId)
+    local vehEntity = Entity(NetworkGetEntityFromNetworkId(vehNetId))
+    if not vehEntity.state.playerOwned and VehicleList[plate] then
+        vehEntity.state.playerOwned = true
+    end
+    return vehEntity.state.playerOwned
 end)
 
 -----------------------
