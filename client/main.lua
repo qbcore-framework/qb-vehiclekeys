@@ -28,7 +28,6 @@ CreateThread(function()
             if entering ~= 0 and not isBlacklistedVehicle(entering) then
                 sleep = 3000
                 local plate = QBCore.Functions.GetPlate(entering)
-                local enteringEntity = Entity(entering)
                 local driver = GetPedInVehicleSeat(entering, -1)
                 for _, veh in ipairs(Config.ImmuneVehicles) do
                     if GetEntityModel(entering) == joaat(veh) then
