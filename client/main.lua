@@ -97,22 +97,24 @@ CreateThread(function()
                 end
             end
 
-            if canCarjack then
-                local playerid = PlayerId()
-                local aiming, target = GetEntityPlayerIsFreeAimingAt(playerid)
-                if aiming and (target ~= nil and target ~= 0) then
-                    if DoesEntityExist(target) and IsPedInAnyVehicle(target, false) and not IsEntityDead(target) and not IsPedAPlayer(target) then
-                        local targetveh = GetVehiclePedIsIn(target)
-                        for _, veh in ipairs(Config.ImmuneVehicles) do
-                            if GetEntityModel(targetveh) == joaat(veh) then
-                                carIsImmune = true
+            if Config.enablecarjack == true then)
+                if canCarjack then
+                    local playerid = PlayerId()
+                    local aiming, target = GetEntityPlayerIsFreeAimingAt(playerid)
+                    if aiming and (target ~= nil and target ~= 0) then
+                        if DoesEntityExist(target) and IsPedInAnyVehicle(target, false) and not IsEntityDead(target) and not IsPedAPlayer(target) then
+                            local targetveh = GetVehiclePedIsIn(target)
+                            for _, veh in ipairs(Config.ImmuneVehicles) do
+                                if GetEntityModel(targetveh) == joaat(veh) then
+                                    carIsImmune = true
+                                end
                             end
-                        end
-                        if GetPedInVehicleSeat(targetveh, -1) == target and not IsBlacklistedWeapon() then
-                            local pos = GetEntityCoords(ped, true)
-                            local targetpos = GetEntityCoords(target, true)
-                            if #(pos - targetpos) < 5.0 and not carIsImmune then
-                                CarjackVehicle(target)
+                            if GetPedInVehicleSeat(targetveh, -1) == target and not IsBlacklistedWeapon() then
+                                local pos = GetEntityCoords(ped, true)
+                                local targetpos = GetEntityCoords(target, true)
+                                if #(pos - targetpos) < 5.0 and not carIsImmune then
+                                    CarjackVehicle(target)
+                                end
                             end
                         end
                     end

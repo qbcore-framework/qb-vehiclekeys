@@ -12,6 +12,7 @@ Config.LockPickDoorEvent = function() -- This function is called when a player a
 end
 
 -- Carjack Settings
+Config.enablecarjack = true
 Config.CarjackingTime = 7500 -- How long it takes to carjack
 Config.DelayBetweenCarjackings = 10000 -- Time before you can carjack again
 Config.CarjackChance = {
