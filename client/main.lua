@@ -97,7 +97,7 @@ CreateThread(function()
                 end
             end
 
-            if Config.enablecarjack then
+            if Config.CarJackEnable then
                 if canCarjack then
                     local playerid = PlayerId()
                     local aiming, target = GetEntityPlayerIsFreeAimingAt(playerid)
@@ -468,7 +468,7 @@ function Hotwire(vehicle, plate)
 end
 
 function CarjackVehicle(target)
-    if Config.enablecarjack then
+    if Config.CarJackEnable then
         isCarjacking = true
         canCarjack = false
         loadAnimDict('mp_am_hold_up')
