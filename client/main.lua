@@ -97,7 +97,7 @@ CreateThread(function()
                 end
             end
 
-            if canCarjack then
+            if Config.CarJackEnable and canCarjack then
                 local playerid = PlayerId()
                 local aiming, target = GetEntityPlayerIsFreeAimingAt(playerid)
                 if aiming and (target ~= nil and target ~= 0) then
