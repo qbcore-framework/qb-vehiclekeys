@@ -97,24 +97,22 @@ CreateThread(function()
                 end
             end
 
-            if Config.CarJackEnable then
-                if canCarjack then
-                    local playerid = PlayerId()
-                    local aiming, target = GetEntityPlayerIsFreeAimingAt(playerid)
-                    if aiming and (target ~= nil and target ~= 0) then
-                        if DoesEntityExist(target) and IsPedInAnyVehicle(target, false) and not IsEntityDead(target) and not IsPedAPlayer(target) then
-                            local targetveh = GetVehiclePedIsIn(target)
-                            for _, veh in ipairs(Config.ImmuneVehicles) do
-                                if GetEntityModel(targetveh) == joaat(veh) then
-                                    carIsImmune = true
-                                end
+            if canCarjack then
+                local playerid = PlayerId()
+                local aiming, target = GetEntityPlayerIsFreeAimingAt(playerid)
+                if aiming and (target ~= nil and target ~= 0) then
+                    if DoesEntityExist(target) and IsPedInAnyVehicle(target, false) and not IsEntityDead(target) and not IsPedAPlayer(target) then
+                        local targetveh = GetVehiclePedIsIn(target)
+                        for _, veh in ipairs(Config.ImmuneVehicles) do
+                            if GetEntityModel(targetveh) == joaat(veh) then
+                                carIsImmune = true
                             end
-                            if GetPedInVehicleSeat(targetveh, -1) == target and not IsBlacklistedWeapon() then
-                                local pos = GetEntityCoords(ped, true)
-                                local targetpos = GetEntityCoords(target, true)
-                                if #(pos - targetpos) < 5.0 and not carIsImmune then
-                                    CarjackVehicle(target)
-                                end
+                        end
+                        if GetPedInVehicleSeat(targetveh, -1) == target and not IsBlacklistedWeapon() then
+                            local pos = GetEntityCoords(ped, true)
+                            local targetpos = GetEntityCoords(target, true)
+                            if #(pos - targetpos) < 5.0 and not carIsImmune then
+                                CarjackVehicle(target)
                             end
                         end
                     end
@@ -468,72 +466,71 @@ function Hotwire(vehicle, plate)
 end
 
 function CarjackVehicle(target)
-    if Config.CarJackEnable then
-        isCarjacking = true
-        canCarjack = false
-        loadAnimDict('mp_am_hold_up')
-        local vehicle = GetVehiclePedIsUsing(target)
-        local occupants = GetPedsInVehicle(vehicle)
-        for p=1,#occupants do
-            local ped = occupants[p]
-            CreateThread(function()
-                TaskPlayAnim(ped, "mp_am_hold_up", "holdup_victim_20s", 8.0, -8.0, -1, 49, 0, false, false, false)
-                PlayPain(ped, 6, 0)
-            end)
-            Wait(math.random(200,500))
-        end
-    -- Cancel progress bar if: Ped dies during robbery, car gets too far away
+    if not Config.CarJackEnable then return end
+    isCarjacking = true
+    canCarjack = false
+    loadAnimDict('mp_am_hold_up')
+    local vehicle = GetVehiclePedIsUsing(target)
+    local occupants = GetPedsInVehicle(vehicle)
+    for p=1,#occupants do
+        local ped = occupants[p]
         CreateThread(function()
-            while isCarjacking do
-                local distance = #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(target))
-                if IsPedDeadOrDying(target) or distance > 7.5 then
-                    TriggerEvent("progressbar:client:cancel")
-                end
-                Wait(100)
-            end
+            TaskPlayAnim(ped, "mp_am_hold_up", "holdup_victim_20s", 8.0, -8.0, -1, 49, 0, false, false, false)
+            PlayPain(ped, 6, 0)
         end)
-        QBCore.Functions.Progressbar("rob_keys", Lang:t("progress.acjack"), Config.CarjackingTime, false, true, {}, {}, {}, {}, function()
-            local hasWeapon, weaponHash = GetCurrentPedWeapon(PlayerPedId(), true)
-            if hasWeapon and isCarjacking then
-                local carjackChance
-                if Config.CarjackChance[tostring(GetWeapontypeGroup(weaponHash))] then
-                    carjackChance = Config.CarjackChance[tostring(GetWeapontypeGroup(weaponHash))]
-                else
-                    carjackChance = 0.5
-                end
-                if math.random() <= carjackChance then
-                    local plate = QBCore.Functions.GetPlate(vehicle)
-                        for p=1,#occupants do
-                            local ped = occupants[p]
-                            CreateThread(function()
-                            TaskLeaveVehicle(ped, vehicle, 0)
-                            PlayPain(ped, 6, 0)
-                            Wait(1250)
-                            ClearPedTasksImmediately(ped)
-                            PlayPain(ped, math.random(7,8), 0)
-                            MakePedFlee(ped)
-                        end)
-                    end
-                    TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
-                    TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', plate)
-                else
-                    QBCore.Functions.Notify(Lang:t("notify.cjackfail"), "error")
-                    MakePedFlee(target)
-                    TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
-                end
-                isCarjacking = false
-                Wait(2000)
-                AttemptPoliceAlert("carjack")
-                Wait(Config.DelayBetweenCarjackings)
-                canCarjack = true
+        Wait(math.random(200,500))
+    end
+    -- Cancel progress bar if: Ped dies during robbery, car gets too far away
+    CreateThread(function()
+        while isCarjacking do
+            local distance = #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(target))
+            if IsPedDeadOrDying(target) or distance > 7.5 then
+                TriggerEvent("progressbar:client:cancel")
             end
-        end, function()
-            MakePedFlee(target)
+            Wait(100)
+        end
+    end)
+    QBCore.Functions.Progressbar("rob_keys", Lang:t("progress.acjack"), Config.CarjackingTime, false, true, {}, {}, {}, {}, function()
+        local hasWeapon, weaponHash = GetCurrentPedWeapon(PlayerPedId(), true)
+        if hasWeapon and isCarjacking then
+            local carjackChance
+            if Config.CarjackChance[tostring(GetWeapontypeGroup(weaponHash))] then
+                carjackChance = Config.CarjackChance[tostring(GetWeapontypeGroup(weaponHash))]
+            else
+                carjackChance = 0.5
+            end
+            if math.random() <= carjackChance then
+                local plate = QBCore.Functions.GetPlate(vehicle)
+                    for p=1,#occupants do
+                        local ped = occupants[p]
+                        CreateThread(function()
+                        TaskLeaveVehicle(ped, vehicle, 0)
+                        PlayPain(ped, 6, 0)
+                        Wait(1250)
+                        ClearPedTasksImmediately(ped)
+                        PlayPain(ped, math.random(7,8), 0)
+                        MakePedFlee(ped)
+                    end)
+                end
+                TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
+                TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', plate)
+            else
+                QBCore.Functions.Notify(Lang:t("notify.cjackfail"), "error")
+                MakePedFlee(target)
+                TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
+            end
             isCarjacking = false
+            Wait(2000)
+            AttemptPoliceAlert("carjack")
             Wait(Config.DelayBetweenCarjackings)
             canCarjack = true
-        end)
-    end
+        end
+    end, function()
+        MakePedFlee(target)
+        isCarjacking = false
+        Wait(Config.DelayBetweenCarjackings)
+        canCarjack = true
+    end)
 end
 
 function AttemptPoliceAlert(type)
