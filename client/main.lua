@@ -155,9 +155,9 @@ RegisterCommand('engine', function()
 end)
 
 AddEventHandler('onResourceStart', function(resourceName)
-	if resourceName == GetCurrentResourceName() and QBCore.Functions.GetPlayerData() ~= {} then
-		GetKeys()
-	end
+    if resourceName == GetCurrentResourceName() and QBCore.Functions.GetPlayerData() ~= {} then
+        GetKeys()
+    end
 end)
 
 -- Handles state right when the player selects their character and location.
@@ -304,14 +304,14 @@ function AreKeysJobShared(veh)
     local onDuty = QBCore.Functions.GetPlayerData().job.onduty
     for job, v in pairs(Config.SharedKeys) do
         if job == jobName then
-	    if Config.SharedKeys[job].requireOnduty and not onDuty then return false end
-	    for _, vehicle in pairs(v.vehicles) do
-	        if string.upper(vehicle) == vehName then
-		    if not HasKeys(vehPlate) then
-		        TriggerServerEvent("qb-vehiclekeys:server:AcquireVehicleKeys", vehPlate)
-		    end
-		    return true
-	        end
+            if Config.SharedKeys[job].requireOnduty and not onDuty then return false end
+            for _, vehicle in pairs(v.vehicles) do
+                if string.upper(vehicle) == vehName then
+                    if not HasKeys(vehPlate) then
+                        TriggerServerEvent("qb-vehiclekeys:server:AcquireVehicleKeys", vehPlate)
+                    end
+                    return true
+                end
             end
         end
     end
