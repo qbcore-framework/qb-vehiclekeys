@@ -301,7 +301,7 @@ function AreKeysJobShared(veh)
         if job == jobName then
 	    if Config.SharedKeys[job].requireOnduty and not onDuty then return false end
 	    for _, vehicle in pairs(v.vehicles) do
-	        if string.upper(vehicle) == vehName then
+	        if string.upper(vehicle) == string.upper(vehName) then
 		    if not HasKeys(vehPlate) then
 		        TriggerServerEvent("qb-vehiclekeys:server:AcquireVehicleKeys", vehPlate)
 		    end
