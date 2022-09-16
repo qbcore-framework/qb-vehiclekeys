@@ -102,7 +102,7 @@ CreateThread(function()
                 end
             end
 
-            if canCarjack then
+            if Config.CarJackEnable and canCarjack then
                 local playerid = PlayerId()
                 local aiming, target = GetEntityPlayerIsFreeAimingAt(playerid)
                 if aiming and (target ~= nil and target ~= 0) then
@@ -306,7 +306,7 @@ function AreKeysJobShared(veh)
         if job == jobName then
             if Config.SharedKeys[job].requireOnduty and not onDuty then return false end
             for _, vehicle in pairs(v.vehicles) do
-                if string.upper(vehicle) == vehName then
+                if string.upper(vehicle) == string.upper(vehName) then
                     if not HasKeys(vehPlate) then
                         TriggerServerEvent("qb-vehiclekeys:server:AcquireVehicleKeys", vehPlate)
                     end
@@ -475,11 +475,10 @@ function Hotwire(vehicle, plate)
 end
 
 function CarjackVehicle(target)
+    if not Config.CarJackEnable then return end
     isCarjacking = true
     canCarjack = false
-
     loadAnimDict('mp_am_hold_up')
-
     local vehicle = GetVehiclePedIsUsing(target)
     local occupants = GetPedsInVehicle(vehicle)
     for p=1,#occupants do
@@ -490,7 +489,6 @@ function CarjackVehicle(target)
         end)
         Wait(math.random(200,500))
     end
-
     -- Cancel progress bar if: Ped dies during robbery, car gets too far away
     CreateThread(function()
         while isCarjacking do
@@ -501,24 +499,20 @@ function CarjackVehicle(target)
             Wait(100)
         end
     end)
-
     QBCore.Functions.Progressbar("rob_keys", Lang:t("progress.acjack"), Config.CarjackingTime, false, true, {}, {}, {}, {}, function()
         local hasWeapon, weaponHash = GetCurrentPedWeapon(PlayerPedId(), true)
         if hasWeapon and isCarjacking then
-
             local carjackChance
             if Config.CarjackChance[tostring(GetWeapontypeGroup(weaponHash))] then
                 carjackChance = Config.CarjackChance[tostring(GetWeapontypeGroup(weaponHash))]
             else
                 carjackChance = 0.5
             end
-
             if math.random() <= carjackChance then
                 local plate = QBCore.Functions.GetPlate(vehicle)
-
-                for p=1,#occupants do
-                    local ped = occupants[p]
-                    CreateThread(function()
+                    for p=1,#occupants do
+                        local ped = occupants[p]
+                        CreateThread(function()
                         TaskLeaveVehicle(ped, vehicle, 0)
                         PlayPain(ped, 6, 0)
                         Wait(1250)
