@@ -23,7 +23,7 @@ local Translations = {
         engine = 'Motor ein-/ausschalten',
     },
     addcom = {
-        givekeys = 'Übergeben Sie die Schlüssel an jemanden. Wenn keinen Bürger-ID angegeben, geht er an die nächstgelegene Person oder an alle Personen im Fahrzeug.',
+        givekeys = 'Übergeben Sie die Schlüssel an jemanden. Wenn keine Bürger-ID angegeben, geht er an die nächstgelegene Person oder an alle Personen im Fahrzeug.',
         givekeys_id = 'id',
         givekeys_id_help = 'Bürger-ID',
         addkeys = 'Fügt Schlüssel zu einem Fahrzeug für jemanden hinzu.',
