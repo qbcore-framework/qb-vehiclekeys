@@ -7,7 +7,7 @@ files {
     'NUI/index.html',
     'NUI/style.css',
     'NUI/script.js',
-    'NUI/images/*',   
+    'NUI/images/*',
 }
 shared_scripts {
     '@qb-core/shared/locale.lua',
