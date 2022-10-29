@@ -294,7 +294,7 @@ end
 
 function AreKeysJobShared(veh)
     local vehName = GetDisplayNameFromVehicleModel(GetEntityModel(veh))
-    local vehPlate = GetVehicleNumberPlateText(veh)
+    local vehPlate = QBCore.Functions.GetPlate(veh)
     local jobName = QBCore.Functions.GetPlayerData().job.name
     local onDuty = QBCore.Functions.GetPlayerData().job.onduty
     for job, v in pairs(Config.SharedKeys) do
