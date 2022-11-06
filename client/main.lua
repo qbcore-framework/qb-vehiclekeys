@@ -70,11 +70,16 @@ CreateThread(function()
                     end
                 -- Parked car logic
                 elseif driver == 0 and entering ~= lastPickedVehicle and not HasKeys(plate) and not isTakingKeys then
-                    if Config.LockNPCParkedCars then
-                        TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(entering), 2)
-                    else
-                        TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(entering), 1)
-                    end
+                    QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:checkPlayerOwned', function(playerOwned)
+                        if not playerOwned then
+                            if Config.LockNPCParkedCars then
+                                TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(entering), 2)
+                            else
+                                TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(entering), 1)
+                            end
+                        end
+                    end, plate)
+
                 end
             end
 
@@ -150,9 +155,9 @@ RegisterCommand('engine', function()
 end)
 
 AddEventHandler('onResourceStart', function(resourceName)
-	if resourceName == GetCurrentResourceName() and QBCore.Functions.GetPlayerData() ~= {} then
-		GetKeys()
-	end
+    if resourceName == GetCurrentResourceName() and QBCore.Functions.GetPlayerData() ~= {} then
+        GetKeys()
+    end
 end)
 
 -- Handles state right when the player selects their character and location.
@@ -299,14 +304,14 @@ function AreKeysJobShared(veh)
     local onDuty = QBCore.Functions.GetPlayerData().job.onduty
     for job, v in pairs(Config.SharedKeys) do
         if job == jobName then
-	    if Config.SharedKeys[job].requireOnduty and not onDuty then return false end
-	    for _, vehicle in pairs(v.vehicles) do
-	        if string.upper(vehicle) == string.upper(vehName) then
-		    if not HasKeys(vehPlate) then
-		        TriggerServerEvent("qb-vehiclekeys:server:AcquireVehicleKeys", vehPlate)
-		    end
-		    return true
-	        end
+            if Config.SharedKeys[job].requireOnduty and not onDuty then return false end
+            for _, vehicle in pairs(v.vehicles) do
+                if string.upper(vehicle) == string.upper(vehName) then
+                    if not HasKeys(vehPlate) then
+                        TriggerServerEvent("qb-vehiclekeys:server:AcquireVehicleKeys", vehPlate)
+                    end
+                    return true
+                end
             end
         end
     end
@@ -325,7 +330,11 @@ function ToggleVehicleLocks(veh)
 
                 TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "lock", 0.3)
 
-                NetworkRequestControlOfEntity(veh)
+                while NetworkGetEntityOwner(veh) ~= 128 do
+                    NetworkRequestControlOfEntity(veh)
+                    Wait(0)
+                end
+
                 if vehLockStatus == 1 then
                     TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(veh), 2)
                     QBCore.Functions.Notify(Lang:t("notify.vlock"), "primary")
