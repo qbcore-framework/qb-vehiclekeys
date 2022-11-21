@@ -60,6 +60,14 @@ QBCore.Functions.CreateCallback('qb-vehiclekeys:server:GetVehicleKeys', function
     cb(keysList)
 end)
 
+QBCore.Functions.CreateCallback('qb-vehiclekeys:server:checkPlayerOwned', function(_, cb, plate)
+    local playerOwned = false
+    if VehicleList[plate] then
+        playerOwned = true
+    end
+    cb(playerOwned)
+end)
+
 -----------------------
 ----   Functions   ----
 -----------------------
