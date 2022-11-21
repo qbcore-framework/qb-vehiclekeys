@@ -116,10 +116,15 @@ end)
 -----------------------
 RegisterKeyMapping('togglelocks', Lang:t("info.tlock"), 'keyboard', 'L')
 RegisterCommand('togglelocks', function()
-  if Config.UseKeyfob then
-     ToggleVehicleLockswithoutnui(GetVehicle())
+    local ped = PlayerPedId()
+  if IsPedInAnyVehicle(ped, false) then
+    ToggleVehicleLockswithoutnui(GetVehicle())
   else
-     openmenu()
+    if Config.UseKeyfob then
+        ToggleVehicleLockswithoutnui(GetVehicle())
+    else
+        openmenu()
+    end
   end
 end)
 RegisterKeyMapping('engine', Lang:t("info.engine"), 'keyboard', 'G')
