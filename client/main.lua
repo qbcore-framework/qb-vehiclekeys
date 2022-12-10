@@ -13,7 +13,7 @@ local usingAdvanced = false
 local IsHotwiring = false
 local looped = false
 
-local function robKeyLoop()    
+local function robKeyLoop()
     if looped == false then
         looped = true
         while true do
