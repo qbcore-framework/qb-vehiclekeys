@@ -11,12 +11,9 @@ local AlertSend = false
 local lastPickedVehicle = nil
 local usingAdvanced = false
 local IsHotwiring = false
+local looped = false
 
------------------------
-----   Threads     ----
------------------------
-
-CreateThread(function()
+local function robKeyLoop()
     while true do
         local sleep = 1000
         if LocalPlayer.state.isLoggedIn then
@@ -123,10 +120,14 @@ CreateThread(function()
                     end
                 end
             end
+            if entering == 0 and not IsPedInAnyVehicle(ped, false) and GetSelectedPedWeapon(ped) == `WEAPON_UNARMED` then
+                looped = false
+                break
+            end
         end
         Wait(sleep)
     end
-end)
+end
 
 function isBlacklistedVehicle(vehicle)
     local isBlacklisted = false
@@ -140,6 +141,19 @@ function isBlacklistedVehicle(vehicle)
     return isBlacklisted
 end
 
+function addNoLockVehicles(model)
+    Config.NoLockVehicles[#Config.NoLockVehicles+1] = model
+end
+exports('addNoLockVehicles', addNoLockVehicles)
+
+function removeNoLockVehicles(model)
+    for k,v in pairs(Config.NoLockVehicles) do
+        if v == model then
+            Config.NoLockVehicles[k] = nil
+        end
+    end
+end
+exports('removeNoLockVehicles', removeNoLockVehicles)
 -----------------------
 ---- Client Events ----
 -----------------------
@@ -221,6 +235,21 @@ RegisterNetEvent('qb-vehiclekeys:client:GiveKeys', function(id)
         else
             QBCore.Functions.Notify(Lang:t("notify.ydhk"), 'error')
         end
+    end
+end)
+
+RegisterNetEvent('QBCore:Client:EnteringVehicle', function()
+    if looped == false then
+        looped = true
+        robKeyLoop()
+    end
+end)
+
+RegisterNetEvent('weapons:client:DrawWeapon', function()
+    if looped == false then
+        looped = true
+        Wait(2000)
+        robKeyLoop()
     end
 end)
 
