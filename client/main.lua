@@ -384,7 +384,7 @@ function GetVehicle()
 
     while vehicle == 0 do
         vehicle = QBCore.Functions.GetClosestVehicle()
-        if #(pos - GetEntityCoords(vehicle)) > 8 then 
+        if #(pos - GetEntityCoords(vehicle)) > 8 then
             QBCore.Functions.Notify(Lang:t("notify.vehclose"), "error")
         return end
     end
