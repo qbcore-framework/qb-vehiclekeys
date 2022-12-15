@@ -121,4 +121,4 @@ QBCore.Commands.Add("removekeys", Lang:t("addcom.rkeys"), {{name = Lang:t("addco
         return
     end
     RemoveKeys(tonumber(args[1]), args[2])
-end, 'admin'
+end, 'admin')
