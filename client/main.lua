@@ -201,7 +201,7 @@ RegisterCommand('togglelocks', function()
 end)
 RegisterKeyMapping('engine', Lang:t("info.engine"), 'keyboard', 'G')
 RegisterCommand('engine', function()
-    TriggerEvent("qb-vehiclekeys:client:ToggleEngine")
+    ToggleEngine(GetVehicle())
 end)
 AddEventHandler('onResourceStart', function(resourceName)
     if resourceName == GetCurrentResourceName() and QBCore.Functions.GetPlayerData() ~= {} then
@@ -301,6 +301,20 @@ function isBlacklistedVehicle(vehicle)
     if Entity(vehicle).state.ignoreLocks or GetVehicleClass(vehicle) == 13 then isBlacklisted = true end
     return isBlacklisted
 end
+function ToggleEngine(veh)
+    if veh then
+        local EngineOn = GetIsVehicleEngineRunning(veh)
+        if not isBlacklistedVehicle(veh) then
+            if HasKeys(QBCore.Functions.GetPlate(veh)) or AreKeysJobShared(veh) then
+                if EngineOn then
+                    SetVehicleEngineOn(veh, false, false, true)
+                else
+                    SetVehicleEngineOn(veh, true, true, true)
+                end
+            end
+        end
+    end
+end
 function ToggleVehicleLockswithoutnui(veh)
     if veh then
         if not isBlacklistedVehicle(veh) then
@@ -362,8 +376,20 @@ function loadAnimDict(dict)
 end
 -- If in vehicle returns that, otherwise tries 3 different raycasts to get the vehicle they are facing.
 -- Raycasts picture: https://i.imgur.com/FRED0kV.png
+
 function GetVehicle()
-    local vehicle = QBCore.Functions.GetClosestVehicle()
+    local ped = PlayerPedId()
+    local pos = GetEntityCoords(ped)
+    local vehicle = GetVehiclePedIsIn(PlayerPedId())
+
+    while vehicle == 0 do
+        vehicle = QBCore.Functions.GetClosestVehicle()
+        if #(pos - GetEntityCoords(vehicle)) > 8 then 
+            QBCore.Functions.Notify(Lang:t("notify.vehclose"), "error")
+        return end
+    end
+
+    if not IsEntityAVehicle(vehicle) then vehicle = nil end
     return vehicle
 end
 function AreKeysJobShared(veh)
@@ -726,6 +752,6 @@ RegisterNUICallback('trunk', function()
 	SetNuiFocus(false, false)
 end)
 RegisterNUICallback('engine', function()
-    TriggerEvent("qb-vehiclekeys:client:ToggleEngine")
+    ToggleEngine(GetVehicle())
 	SetNuiFocus(false, false)
 end)

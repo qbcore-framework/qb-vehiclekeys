@@ -14,6 +14,7 @@ local Translations = {
         vgetkeys = 'Ai primit cheile vehiculului!',
         fpid = 'Trebuie sa introduci ID-ul jucatorului si numarul de inmatriculare',
         cjackfail = 'Furtul de mașină a eșuat',
+        vehclose = 'Thers no close vehicle!',
     },
     progress = {
         takekeys = 'Iei chile de la vehicul...',

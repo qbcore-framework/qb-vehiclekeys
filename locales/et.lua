@@ -10,6 +10,7 @@ local Translations = {
         vgetkeys = 'Saate auto võtmed!',
         fpid = 'Täitke mängija ID ja plaadi argumendid',
         cjackfail = 'Autovargamine ebaõnnestus!',
+        vehclose = 'Thers no close vehicle!',
     },
     progress = {
         takekeys = 'Võtmete kehast võtmine...',
