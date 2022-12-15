@@ -20,17 +20,15 @@ $(function()
         }   
     }, false);
 
+    document.onkeyup = function (data) {
+        if (data.which == 27) { // Escape key
+            $.post('https://qb-vehiclekeys/closui', JSON.stringify({ message: null }));
+            $('.container').hide();
+        }
+    };
+
 });
-document.onreadystatechange = () => {
-    if (document.readyState === 'complete') {
-        $(document).keyup(function(event) {
-            if (event.key === 'x') {
-                $.post('https://qb-vehiclekeys/closui', JSON.stringify({ message: null }));
-                $('.container').hide();
-            }
-        });
-    }
-}
+
 function unlock()
 {
     $.post('https://qb-vehiclekeys/unlock', JSON.stringify({ 
