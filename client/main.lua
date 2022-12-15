@@ -11,6 +11,7 @@ local lastPickedVehicle = nil
 local usingAdvanced = false
 local IsHotwiring = false
 local trunkclose = true
+local looped = false
 local function robKeyLoop()
     if looped == false then
         looped = true
