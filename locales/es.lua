@@ -10,6 +10,7 @@ local Translations = {
         vgetkeys = '¡Has recibido las llaves al vehículo!',
         fpid = 'Llena los argumentos de ID y placa del jugador',
         cjackfail = '¡Robo de carro falló!',
+        vehclose = '¡No hay vehículo cerca!',
     },
     progress = {
         takekeys = 'Obteniendo las llaves del cuerpo...',
