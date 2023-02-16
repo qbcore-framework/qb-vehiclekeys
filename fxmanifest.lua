@@ -1,7 +1,7 @@
 fx_version 'cerulean'
 game 'gta5'
 description 'QB-VehicleKeys'
-version '1.2.1'
+version '1.2.2'
 ui_page 'NUI/index.html'
 files {
     'NUI/index.html',
