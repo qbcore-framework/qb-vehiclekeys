@@ -385,6 +385,7 @@ function GetVehicle()
     local ped = PlayerPedId()
     local pos = GetEntityCoords(ped)
     local vehicle = GetVehiclePedIsIn(PlayerPedId())
+    QBCore.Functions.Notify(Lang:t("notify.vehclose"), "error")
 
     while vehicle == 0 do
         vehicle = QBCore.Functions.GetClosestVehicle()
