@@ -385,7 +385,7 @@ function GetVehicle()
     local ped = PlayerPedId()
     local pos = GetEntityCoords(ped)
     local vehicle = GetVehiclePedIsIn(PlayerPedId())
-    
+
     while vehicle == 0 do
         vehicle = QBCore.Functions.GetClosestVehicle()
         if #(pos - GetEntityCoords(vehicle)) > 8 then
