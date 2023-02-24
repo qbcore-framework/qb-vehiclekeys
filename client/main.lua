@@ -201,8 +201,12 @@ RegisterCommand('togglelocks', function()
 end)
 RegisterKeyMapping('engine', Lang:t("info.engine"), 'keyboard', 'G')
 RegisterCommand('engine', function()
-    ToggleEngine(GetVehicle())
+    local vehicle = GetVehicle()
+    if vehicle and IsPedInVehicle(PlayerPedId(), vehicle) then
+        ToggleEngine(vehicle)
+    end
 end)
+
 AddEventHandler('onResourceStart', function(resourceName)
     if resourceName == GetCurrentResourceName() and QBCore.Functions.GetPlayerData() ~= {} then
         GetKeys()
@@ -386,7 +390,8 @@ function GetVehicle()
         vehicle = QBCore.Functions.GetClosestVehicle()
         if #(pos - GetEntityCoords(vehicle)) > 8 then
             QBCore.Functions.Notify(Lang:t("notify.vehclose"), "error")
-        return end
+            return
+        end
     end
 
     if not IsEntityAVehicle(vehicle) then vehicle = nil end
