@@ -50,7 +50,9 @@ RegisterNetEvent('qb-vehiclekeys:server:setVehLockState', function(vehNetId, sta
 end)
 
 QBCore.Functions.CreateCallback('qb-vehiclekeys:server:GetVehicleKeys', function(source, cb)
-    local citizenid = QBCore.Functions.GetPlayer(source).PlayerData.citizenid
+    local Player = QBCore.Functions.GetPlayer(source)
+    if not Player then return end
+    local citizenid = Player.PlayerData.citizenid
     local keysList = {}
     for plate, citizenids in pairs (VehicleList) do
         if citizenids[citizenid] then

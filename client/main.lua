@@ -193,9 +193,9 @@ RegisterCommand('togglelocks', function()
     ToggleVehicleLockswithoutnui(GetVehicle())
   else
     if Config.UseKeyfob then
-        ToggleVehicleLockswithoutnui(GetVehicle())
-    else
         openmenu()
+    else
+	ToggleVehicleLockswithoutnui(GetVehicle())
     end
   end
 end)
