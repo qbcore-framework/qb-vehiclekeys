@@ -8,6 +8,7 @@ local trunkclose = true
 local IsRobbing = false
 local lockpicked = false
 local lockpickedPlate = nil
+local usingAdvanced
 -----------------------
 ----   Thread   ----
 -----------------------
@@ -133,17 +134,7 @@ function removeNoLockVehicles(model)
 end
 exports('removeNoLockVehicles', removeNoLockVehicles)
 
-function isBlacklistedVehicle(vehicle)
-    local isBlacklisted = false
-    for _,v in ipairs(Config.NoLockVehicles) do
-        if GetHashKey(v) == GetEntityModel(vehicle) then
-            isBlacklisted = true
-            break;
-        end
-    end
-    if Entity(vehicle).state.ignoreLocks or GetVehicleClass(vehicle) == 13 then isBlacklisted = true end
-    return isBlacklisted
-end
+
 
 function addNoLockVehicles(model)
     Config.NoLockVehicles[#Config.NoLockVehicles+1] = model
@@ -516,7 +507,6 @@ function LockpickDoor(isAdvanced)
     local ped = PlayerPedId()
     local pos = GetEntityCoords(ped)
     local vehicle = QBCore.Functions.GetClosestVehicle()
-    usingAdvanced = false
     if vehicle == nil or vehicle == 0 then return end
     if HasKeys(QBCore.Functions.GetPlate(vehicle)) then return end
     if #(pos - GetEntityCoords(vehicle)) > 2.5 then return end
