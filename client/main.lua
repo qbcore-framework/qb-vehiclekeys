@@ -3,10 +3,7 @@
 -----------------------
 local QBCore = exports['qb-core']:GetCoreObject()
 local KeysList = {}
-local isCarjacking = false
 local AlertSend = false
-local lastPickedVehicle = nil
-local usingAdvanced = false
 local trunkclose = true
 local IsRobbing = false
 local lockpicked = false
@@ -514,17 +511,6 @@ function GetOtherPlayersInVehicle(vehicle)
     return otherPeds
 end
 
-function GetPedsInVehicle(vehicle)
-    local otherPeds = {}
-    for seat=-1,GetVehicleModelNumberOfSeats(GetEntityModel(vehicle))-2 do
-        local pedInSeat = GetPedInVehicleSeat(vehicle, seat)
-        if not IsPedAPlayer(pedInSeat) and pedInSeat ~= 0 then
-            otherPeds[#otherPeds+1] = pedInSeat
-        end
-    end
-    return otherPeds
-end
-
 function IsBlacklistedWeapon()
     local weapon = GetSelectedPedWeapon(PlayerPedId())
     if weapon ~= nil then
@@ -541,7 +527,7 @@ function LockpickDoor(isAdvanced)
     local ped = PlayerPedId()
     local pos = GetEntityCoords(ped)
     local vehicle = QBCore.Functions.GetClosestVehicle()
-
+    usingAdvanced = false
     if vehicle == nil or vehicle == 0 then return end
     if HasKeys(QBCore.Functions.GetPlate(vehicle)) then return end
     if #(pos - GetEntityCoords(vehicle)) > 2.5 then return end
@@ -566,10 +552,7 @@ function AttemptPoliceAlert(type)
         end)
     end
 end
-function MakePedFlee(ped)
-    SetPedFleeAttributes(ped, 0, 0)
-    TaskReactAndFleePed(ped, PlayerPedId())
-end
+
 -----------------------
 ----   NUICallback   ----
 -----------------------
