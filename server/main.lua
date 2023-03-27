@@ -36,6 +36,7 @@ RegisterNetEvent('qb-vehiclekeys:server:AcquireVehicleKeys', function(plate)
     GiveKeys(src, plate)
 end)
 
+
 RegisterNetEvent('qb-vehiclekeys:server:breakLockpick', function(itemName)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
@@ -48,6 +49,11 @@ end)
 RegisterNetEvent('qb-vehiclekeys:server:setVehLockState', function(vehNetId, state)
     SetVehicleDoorsLocked(NetworkGetEntityFromNetworkId(vehNetId), state)
 end)
+
+
+-----------------------
+----   Callbacks   ----
+-----------------------
 
 QBCore.Functions.CreateCallback('qb-vehiclekeys:server:GetVehicleKeys', function(source, cb)
     local Player = QBCore.Functions.GetPlayer(source)
@@ -70,10 +76,31 @@ QBCore.Functions.CreateCallback('qb-vehiclekeys:server:checkPlayerOwned', functi
     cb(playerOwned)
 end)
 
+QBCore.Functions.CreateCallback('vehiclekeys:CheckOwnership', function(_, cb, plate)
+    local check = VehicleList[plate]
+    local retval = check ~= nil
+
+    cb(retval)
+end)
+QBCore.Functions.CreateCallback('vehiclekeys:CheckHasKey', function(source, cb, plate)
+    local Player = QBCore.Functions.GetPlayer(source)
+    cb(CheckOwner(plate, Player.PlayerData.citizenid))
+end)
+
 -----------------------
 ----   Functions   ----
 -----------------------
+function CheckOwner(plate, identifier)
+    local retval = false
+    if VehicleList then
+        local found = VehicleList[plate]
+        if found then
+            retval = found.owners[identifier] ~= nil and found.owners[identifier]
+        end
+    end
 
+    return retval
+end
 function GiveKeys(id, plate)
     local citizenid = QBCore.Functions.GetPlayer(id).PlayerData.citizenid
 
