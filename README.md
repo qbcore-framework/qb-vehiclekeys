@@ -2,7 +2,7 @@
 Vehicle Keys System For QB-Core
 
 # [video]
-[![Watch the video](https://media.discordapp.net/attachments/964009269408186448/1053708299553484850/image.png)](https://www.youtube.com/watch?v=7E9TXR3lXPI)
+[![Watch the video](https://media.discordapp.net/attachments/1027916921091412019/1089826180796002334/qbcorekey.png)](https://www.youtube.com/watch?v=7E9TXR3lXPI)
 
 
 # License
