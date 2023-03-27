@@ -3,7 +3,7 @@
 -----------------------
 local QBCore = exports['qb-core']:GetCoreObject()
 local KeysList = {}
-HasKey = false
+
 local AlertSend = false
 local trunkclose = true
 local IsRobbing = false
@@ -13,6 +13,7 @@ local usingAdvanced
 -----------------------
 ----   Thread   ----
 -----------------------
+HasKey = false
 CreateThread(function()
     while true do
         local sleep = 100
@@ -21,6 +22,7 @@ CreateThread(function()
             local entering = GetVehiclePedIsTryingToEnter(ped)
             local driver = GetPedInVehicleSeat(entering, -1)
             local plate = QBCore.Functions.GetPlate(entering)
+            
             if entering ~= 0 then
                 sleep = 2000
                 QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:checkPlayerOwned', function(have)
