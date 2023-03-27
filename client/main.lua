@@ -3,6 +3,7 @@
 -----------------------
 local QBCore = exports['qb-core']:GetCoreObject()
 local KeysList = {}
+local HasKey = false
 local AlertSend = false
 local trunkclose = true
 local IsRobbing = false
@@ -40,11 +41,11 @@ CreateThread(function()
                             end
                         else
                             if not lockpicked and lockpickedPlate ~= plate then
-                                QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:GetVehicleKeys', function(result)
-                                    if not result then
-                                        SetVehicleDoorsLocked(entering, 2)
-                                    else
+                                QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:GetVehicleKeys', function(have)
+                                    if have then
                                         HasKey = true
+                                    else
+                                        SetVehicleDoorsLocked(entering, 2)
                                     end
                                 end, plate)
                             end
