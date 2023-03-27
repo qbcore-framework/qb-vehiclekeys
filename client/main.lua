@@ -40,8 +40,8 @@ CreateThread(function()
                             end
                         else
                             if not lockpicked and lockpickedPlate ~= plate then
-                                QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:GetVehicleKeys', function(have)
-                                    if have == nil then
+                                QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:CheckHasKey', function(have2)
+                                    if not have2 then
                                         SetVehicleDoorsLocked(entering, 2)
                                     end
                                 end, plate)

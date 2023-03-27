@@ -68,6 +68,16 @@ QBCore.Functions.CreateCallback('qb-vehiclekeys:server:GetVehicleKeys', function
     cb(keysList)
 end)
 
+QBCore.Functions.CreateCallback('qb-vehiclekeys:server:CheckHasKey', function(source, cb, plate)
+    local Player = QBCore.Functions.GetPlayer(source)
+     if HasKeys(Player.PlayerData.citizenid, plate) then
+        cb(true)
+     else
+        cb(false)
+     end
+end)
+
+
 QBCore.Functions.CreateCallback('qb-vehiclekeys:server:checkPlayerOwned', function(_, cb, plate)
     if VehicleList[plate] then
         cb(true)
