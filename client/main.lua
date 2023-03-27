@@ -3,7 +3,7 @@
 -----------------------
 local QBCore = exports['qb-core']:GetCoreObject()
 local KeysList = {}
-local HasKey = false
+HasKey = false
 local AlertSend = false
 local trunkclose = true
 local IsRobbing = false
@@ -24,7 +24,7 @@ CreateThread(function()
             if entering ~= 0 then
                 sleep = 2000
                 QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:checkPlayerOwned', function(have)
-                    if have ~= nil then -- if not player owned
+                    if have then -- if not player owned
                         if driver ~= 0 and not IsPedAPlayer(driver) then
                             if Config.Rob then
                                 if IsEntityDead(driver) then
@@ -32,6 +32,7 @@ CreateThread(function()
                                     SetVehicleDoorsLocked(entering, 1)
                                     HasKey = true
                                 else
+                                    HasKey = false
                                     SetVehicleDoorsLocked(entering, 2)
                                 end
                             else
@@ -46,6 +47,7 @@ CreateThread(function()
                                         HasKey = true
                                     else
                                         SetVehicleDoorsLocked(entering, 2)
+                                        HasKey = false
                                     end
                                 end, plate)
                             end
