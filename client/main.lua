@@ -21,7 +21,7 @@ CreateThread(function()
             local plate = QBCore.Functions.GetPlate(entering)
             if entering ~= 0 then
                 sleep = 2000
-                QBCore.Functions.TriggerCallback('vehiclekeys:CheckOwnership', function(result)
+                QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:checkPlayerOwned', function(result)
                     if not result then -- if not player owned
                         if driver ~= 0 and not IsPedAPlayer(driver) then
                             if Config.Rob then
@@ -243,17 +243,6 @@ RegisterNetEvent('qb-vehiclekeys:client:GiveKeys', function(id)
         end
     end
 end)
-
-RegisterNetEvent('QBCore:Client:EnteringVehicle', function()
-    robKeyLoop()
-end)
-
-RegisterNetEvent('weapons:client:DrawWeapon', function()
-    Wait(2000)
-    robKeyLoop()
-end)
-
-
 RegisterNetEvent('lockpicks:UseLockpick', function(isAdvanced)
     LockpickDoor(isAdvanced)
 end)
