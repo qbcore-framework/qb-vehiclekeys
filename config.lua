@@ -1,9 +1,11 @@
 Config = {}
-
+Config.Rob = true -- Enables robbing AI cars at gunpoint
 -- NPC Vehicle Lock States
 Config.LockNPCDrivingCars = true -- Lock state for NPC cars being driven by NPCs [true = locked, false = unlocked]
 Config.LockNPCParkedCars = true -- Lock state for NPC parked cars [true = locked, false = unlocked]
-Config.UseKeyfob = false -- you can set this true if you dont need ui
+Config.UseKeyfob = true -- you can set this false if you dont need ui
+Config.RobberyChance = 0.5 -- Chance to get ped keys or drive off
+
 -- Lockpick Settings
 Config.RemoveLockpickNormal = 0.5 -- Chance to remove lockpick on fail
 Config.RemoveLockpickAdvanced = 0.2 -- Chance to remove advanced lockpick on fail
