@@ -39,7 +39,7 @@ CreateThread(function()
                             end
                         else
                             if not lockpicked and lockpickedPlate ~= plate then
-                                QBCore.Functions.TriggerCallback('vehiclekeys:CheckHasKey', function(result)
+                                QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:GetVehicleKeys', function(result)
                                     if not result then
                                         SetVehicleDoorsLocked(entering, 2)
                                     else
@@ -523,7 +523,34 @@ function LockpickDoor(isAdvanced)
     if GetVehicleDoorLockStatus(vehicle) <= 0 then return end
 
     usingAdvanced = isAdvanced
-    Config.LockPickDoorEvent()
+    TriggerEvent('qb-lockpick:client:openLockpick', lockpickFinish)
+end
+function lockpickFinish(success)
+    local vehicle = QBCore.Functions.GetClosestVehicle()
+    local chance = math.random()
+    if success then
+        TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
+        lastPickedVehicle = vehicle
+        if GetPedInVehicleSeat(vehicle, -1) == PlayerPedId() then
+            TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', QBCore.Functions.GetPlate(vehicle))
+        else
+            QBCore.Functions.Notify('You managed to pick the door lock open!', 'success')
+            TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(vehicle))
+            SetVehicleDoorsLocked(vehicle, 1)
+        end
+    else
+        TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
+        AttemptPoliceAlert("steal")
+    end
+    if usingAdvanced then
+        if chance <= Config.RemoveLockpickAdvanced then
+            TriggerServerEvent("inventory:server:breakLockpick", "advancedlockpick")
+        end
+    else
+        if chance <= Config.RemoveLockpickNormal then
+            TriggerServerEvent("inventory:server:breakLockpick", "lockpick")
+        end
+    end
 end
 
 function AttemptPoliceAlert(type)
