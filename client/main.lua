@@ -3,7 +3,6 @@
 -----------------------
 local QBCore = exports['qb-core']:GetCoreObject()
 local KeysList = {}
-
 local AlertSend = false
 local trunkclose = true
 local IsRobbing = false
@@ -13,7 +12,7 @@ local usingAdvanced
 -----------------------
 ----   Thread   ----
 -----------------------
-HasKey = false
+
 CreateThread(function()
     while true do
         local sleep = 100
@@ -32,24 +31,19 @@ CreateThread(function()
                                 if IsEntityDead(driver) then
                                     TriggerEvent("vehiclekeys:client:SetOwner", plate)
                                     SetVehicleDoorsLocked(entering, 1)
-                                    HasKey = true
                                 else
-                                    HasKey = false
                                     SetVehicleDoorsLocked(entering, 2)
                                 end
                             else
                                 TriggerEvent("vehiclekeys:client:SetOwner", plate)
                                 SetVehicleDoorsLocked(entering, 1)
-                                HasKey = true
+                               
                             end
                         else
                             if not lockpicked and lockpickedPlate ~= plate then
                                 QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:GetVehicleKeys', function(have)
-                                    if have ~= nil then
-                                        HasKey = true
-                                    else
-                                        SetVehicleDoorsLocked(entering, 2)
-                                        HasKey = false
+                                    if have == nil then
+                                        SetVehicleDoorsLocked(entering, 2) 
                                     end
                                 end, plate)
                             end
