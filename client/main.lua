@@ -37,13 +37,12 @@ CreateThread(function()
                             else
                                 TriggerEvent("vehiclekeys:client:SetOwner", plate)
                                 SetVehicleDoorsLocked(entering, 1)
-                               
                             end
                         else
                             if not lockpicked and lockpickedPlate ~= plate then
                                 QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:GetVehicleKeys', function(have)
                                     if have == nil then
-                                        SetVehicleDoorsLocked(entering, 2) 
+                                        SetVehicleDoorsLocked(entering, 2)
                                     end
                                 end, plate)
                             end
@@ -78,13 +77,13 @@ CreateThread(function()
     end
 end)
 function RobVehicle(target)
+    local veh = GetVehiclePedIsUsing(target)
     IsRobbing = true
     loadAnimDict('mp_am_hold_up')
     TaskPlayAnim(target, "mp_am_hold_up", "holdup_victim_20s", 8.0, -8.0, -1, 2, 0, false, false, false)
     QBCore.Functions.Progressbar("rob_keys", "Attempting Robbery..", 6000, false, true, {}, {}, {}, {}, function()
         local chance = math.random()
         if chance <= Config.RobberyChance then
-            veh = GetVehiclePedIsUsing(target)
             TaskEveryoneLeaveVehicle(veh)
             Wait(500)
             ClearPedTasksImmediately(target)
