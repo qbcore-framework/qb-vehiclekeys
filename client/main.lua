@@ -23,8 +23,8 @@ CreateThread(function()
             local plate = QBCore.Functions.GetPlate(entering)
             if entering ~= 0 then
                 sleep = 2000
-                QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:checkPlayerOwned', function(result)
-                    if not result then -- if not player owned
+                QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:checkPlayerOwned', function(have)
+                    if have ~= nil then -- if not player owned
                         if driver ~= 0 and not IsPedAPlayer(driver) then
                             if Config.Rob then
                                 if IsEntityDead(driver) then
@@ -42,7 +42,7 @@ CreateThread(function()
                         else
                             if not lockpicked and lockpickedPlate ~= plate then
                                 QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:GetVehicleKeys', function(have)
-                                    if have then
+                                    if have ~= nil then
                                         HasKey = true
                                     else
                                         SetVehicleDoorsLocked(entering, 2)
