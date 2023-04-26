@@ -19,7 +19,7 @@
 div {
     margin-bottom: 20px;
 }
-.btn4{
+.unlock-button{
     width: 50px;
     height: 50px;
     position: absolute;
@@ -32,7 +32,7 @@ div {
     border: 0;
     cursor: pointer;
 }
-.btn5{
+.lock-button{
     width: 50px;
     height: 50px;
     position: absolute;
@@ -45,7 +45,7 @@ div {
     border: 0;
     cursor: pointer;
 }
-.btn7{  
+.trunk-button{  
     width: 50px;
     height: 50px;
     position: absolute;
@@ -58,7 +58,7 @@ div {
     border: 0;
     cursor: pointer;
 }
-.btn9{
+.engine-button{
     width: 50px;
     height: 50px;
     position: absolute;
