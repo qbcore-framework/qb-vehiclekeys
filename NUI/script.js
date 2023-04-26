@@ -27,34 +27,23 @@ $(function()
         }
     };
 
+    document.getElementById("unlock-button").addEventListener("click", function(){
+        $.post('https://qb-vehiclekeys/unlock', JSON.stringify({}))
+        $('.container').hide();   
+    });
+
+    document.getElementById("lock-button").addEventListener("click", function(){
+        $.post('https://qb-vehiclekeys/lock', JSON.stringify({}))
+        $('.container').hide();   
+    });
+
+    document.getElementById("trunk-button").addEventListener("click", function(){
+        $.post('https://qb-vehiclekeys/trunk', JSON.stringify({}))
+        $('.container').hide();   
+    });
+
+    document.getElementById("engine-button").addEventListener("click", function(){
+        $.post('https://qb-vehiclekeys/engine', JSON.stringify({}))
+        $('.container').hide();   
+    });
 });
-
-function unlock()
-{
-    $.post('https://qb-vehiclekeys/unlock', JSON.stringify({ 
-       
-     }))
-    $('.container').hide();
-}
-function lock()
-{
-    $.post('https://qb-vehiclekeys/lock', JSON.stringify({ 
-       
-     }))
-    $('.container').hide();
-}
-function trunk()
-{
-    $.post('https://qb-vehiclekeys/trunk', JSON.stringify({ 
-       
-     }))
-    $('.container').hide();
-}
-function engine()
-{
-    $.post('https://qb-vehiclekeys/engine', JSON.stringify({ 
-       
-     }))
-    $('.container').hide();
-}
-
