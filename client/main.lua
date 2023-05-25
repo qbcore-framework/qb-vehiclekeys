@@ -484,7 +484,7 @@ function ToggleVehicleTrunk(veh)
         if not isBlacklistedVehicle(veh) then
             if HasKeys(QBCore.Functions.GetPlate(veh)) or AreKeysJobShared(veh) then
                 local ped = PlayerPedId()
-                local boot = GetEntityBoneIndexByName(GetVehiclePedIsIn(GetPlayerPed(-1), false), 'boot')
+                local boot = GetEntityBoneIndexByName(GetVehiclePedIsIn(PlayerPedId(), false), 'boot')
                 loadAnimDict("anim@mp_player_intmenu@key_fob@")
                 TaskPlayAnim(ped, 'anim@mp_player_intmenu@key_fob@', 'fob_click', 3.0, 3.0, -1, 49, 0, false, false, false)
                 TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "lock", 0.3)
