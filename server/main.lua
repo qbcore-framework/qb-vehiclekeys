@@ -75,11 +75,18 @@ end)
 -----------------------
 
 function GiveKeys(id, plate)
-    local citizenid = QBCore.Functions.GetPlayer(id).PlayerData.citizenid
-
+    local Player = QBCore.Functions.GetPlayer(id)
+    if not Player then return end
+    local citizenid = Player.PlayerData.citizenid
+    if not plate then
+        if GetVehiclePedIsIn(GetPlayerPed(id), false) ~= 0 then
+            plate = QBCore.Shared.Trim(GetVehicleNumberPlateText(GetVehiclePedIsIn(GetPlayerPed(id), false)))
+        else
+            return
+        end
+    end
     if not VehicleList[plate] then VehicleList[plate] = {} end
     VehicleList[plate][citizenid] = true
-    
     TriggerClientEvent('QBCore:Notify', id, Lang:t("notify.vgetkeys"))
     TriggerClientEvent('qb-vehiclekeys:client:AddKeys', id, plate)
 end
