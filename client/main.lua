@@ -299,14 +299,34 @@ function ToggleVehicleLockswithoutnui(veh)
         if not isBlacklistedVehicle(veh) then
             if HasKeys(QBCore.Functions.GetPlate(veh)) or AreKeysJobShared(veh) then
                 local ped = PlayerPedId()
-                local vehLockStatus = GetVehicleDoorLockStatus(veh)
+                local vehLockStatus, curVeh = GetVehicleDoorLockStatus(veh), GetVehiclePedIsIn(ped, false)
+                local object = 0
 
-                if not GetVehiclePedIsIn(ped) then
-                    loadAnimDict("anim@mp_player_intmenu@key_fob@")
-                    TaskPlayAnim(ped, 'anim@mp_player_intmenu@key_fob@', 'fob_click', 3.0, 3.0, -1, 49, 0, false, false, false)
+                if curVeh == 0 then
+                    if Config.LockToggleAnimation.Prop then
+                        object = CreateObject(joaat(Config.LockToggleAnimation.Prop), 0, 0, 0, true, true, true)
+                        while not DoesEntityExist(object) do Wait(1) end
+                        AttachEntityToEntity(object, ped, GetPedBoneIndex(ped, Config.LockToggleAnimation.PropBone),
+                            0.1, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
+                    end
+
+                    loadAnimDict(Config.LockToggleAnimation.AnimDict)
+                    TaskPlayAnim(ped, Config.LockToggleAnimation.AnimDict, Config.LockToggleAnimation.Anim, 8.0, -8.0, -1, 52, 0, false, false, false)
+                    TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5.0, Config.LockAnimSound, 0.5)
                 end
 
-                TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, "lock", 0.3)
+                Citizen.CreateThread(function()
+                    if curVeh == 0 then Wait(Config.LockToggleAnimation.WaitTime) end
+                    if IsEntityPlayingAnim(ped, Config.LockToggleAnimation.AnimDict, Config.LockToggleAnimation.Anim, 3) then
+                        StopAnimTask(ped, Config.LockToggleAnimation.AnimDict, Config.LockToggleAnimation.Anim, 8.0)
+                    end
+                    TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5, Config.LockToggleSound, 0.3)
+
+                    if object ~= 0 and DoesEntityExist(object) then
+                        DeleteObject(object)
+                        object = 0
+                    end
+                end)
 
                 NetworkRequestControlOfEntity(veh)
                 if vehLockStatus == 1 then
@@ -369,7 +389,7 @@ function GetVehicle()
 
     while vehicle == 0 do
         vehicle = QBCore.Functions.GetClosestVehicle()
-        if #(pos - GetEntityCoords(vehicle)) > 8 then
+        if #(pos - GetEntityCoords(vehicle)) > Config.LockToggleDist then
             QBCore.Functions.Notify(Lang:t("notify.vehclose"), "error")
             return
         end

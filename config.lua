@@ -1,5 +1,17 @@
 Config = {}
 
+-- Vehicle lock settings
+Config.LockToggleAnimation = {
+    AnimDict = 'anim@mp_player_intmenu@key_fob@',
+    Anim = 'fob_click',
+    Prop = 'prop_cuff_keys_01',
+    PropBone = 57005,
+    WaitTime = 500,
+}
+Config.LockAnimSound = "keys"
+Config.LockToggleSound = "lock"
+Config.LockToggleDist = 8.0
+
 -- NPC Vehicle Lock States
 Config.LockNPCDrivingCars = true -- Lock state for NPC cars being driven by NPCs [true = locked, false = unlocked]
 Config.LockNPCParkedCars = true -- Lock state for NPC parked cars [true = locked, false = unlocked]
