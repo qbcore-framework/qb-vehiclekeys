@@ -239,8 +239,14 @@ RegisterNetEvent('qb-vehiclekeys:client:GiveKeys', function(id)
             else
                 if IsPedSittingInVehicle(PlayerPedId(), targetVehicle) then -- Give keys to everyone in vehicle
                     local otherOccupants = GetOtherPlayersInVehicle(targetVehicle)
-                    for p=1,#otherOccupants do
-                        TriggerServerEvent('qb-vehiclekeys:server:GiveVehicleKeys', GetPlayerServerId(NetworkGetPlayerIndexFromPed(otherOccupants[p])), targetPlate)
+                    if Config.SingleKey and otherOccupants[0] then
+                        TriggerServerEvent('qb-vehiclekeys:server:GiveVehicleKeys', GetPlayerServerId(NetworkGetPlayerIndexFromPed(otherOccupants[0])), targetPlate)
+                    elseif not Config.SingleKey then
+                        for _, player in pairs(otherOccupants) do
+                            TriggerServerEvent('qb-vehiclekeys:server:GiveVehicleKeys', GetPlayerServerId(NetworkGetPlayerIndexFromPed(player)), targetPlate)
+                        end
+                    else
+                        QBCore.Functions.Notify(Lang:t("notify.nonear"), 'error')
                     end
                 else -- Give keys to closest player
                     GiveKeys(GetPlayerServerId(QBCore.Functions.GetClosestPlayer()), targetPlate)
@@ -513,7 +519,7 @@ function GetOtherPlayersInVehicle(vehicle)
     for seat=-1,GetVehicleModelNumberOfSeats(GetEntityModel(vehicle))-2 do
         local pedInSeat = GetPedInVehicleSeat(vehicle, seat)
         if IsPedAPlayer(pedInSeat) and pedInSeat ~= PlayerPedId() then
-            otherPeds[#otherPeds+1] = pedInSeat
+            otherPeds[seat] = pedInSeat
         end
     end
     return otherPeds

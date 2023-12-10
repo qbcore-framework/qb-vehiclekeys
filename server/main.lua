@@ -85,10 +85,16 @@ function GiveKeys(id, plate)
             return
         end
     end
-    if not VehicleList[plate] then VehicleList[plate] = {} end
-    VehicleList[plate][citizenid] = true
-    TriggerClientEvent('QBCore:Notify', id, Lang:t("notify.vgetkeys"))
-    TriggerClientEvent('qb-vehiclekeys:client:AddKeys', id, plate)
+    Citizen.CreateThread(function()
+        if not VehicleList[plate] or Config.SingleKey then
+            VehicleList[plate] = {}
+            TriggerClientEvent('qb-vehiclekeys:client:RemoveKeys', -1, plate)
+            Wait(200)
+        end
+        VehicleList[plate][citizenid] = true
+        TriggerClientEvent('QBCore:Notify', id, Lang:t("notify.vgetkeys"))
+        TriggerClientEvent('qb-vehiclekeys:client:AddKeys', id, plate)
+    end)
 end
 exports('GiveKeys', GiveKeys)
 
