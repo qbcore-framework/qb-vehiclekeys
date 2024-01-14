@@ -722,7 +722,11 @@ end
 
 function DrawText3D(x, y, z, text)
     SetTextScale(0.35, 0.35)
-    SetTextFont(4)
+    if GetConvar('qb_locale', 'en') == 'en' then
+        SetTextFont(4)
+    else
+        SetTextFont(1)
+    end
     SetTextProportional(1)
     SetTextColour(255, 255, 255, 215)
     SetTextEntry("STRING")
