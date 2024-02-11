@@ -1,15 +1,9 @@
 fx_version 'cerulean'
 game 'gta5'
-description 'QB-VehicleKeys'
+lua54 'yes'
+author 'Kakarot'
+description 'Manages vehicle doors and keys for players to lock/unlock them'
 version '1.3.0'
-ui_page 'NUI/index.html'
-
-files {
-    'NUI/index.html',
-    'NUI/style.css',
-    'NUI/script.js',
-    'NUI/images/*',
-}
 
 shared_scripts {
     '@qb-core/shared/locale.lua',
@@ -21,4 +15,11 @@ shared_scripts {
 client_script 'client/main.lua'
 server_script 'server/main.lua'
 
-lua54 'yes'
+ui_page 'NUI/index.html'
+
+files {
+    'NUI/index.html',
+    'NUI/style.css',
+    'NUI/script.js',
+    'NUI/images/*',
+}
