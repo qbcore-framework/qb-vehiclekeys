@@ -576,7 +576,8 @@ function LockpickDoor(isAdvanced)
     Config.LockPickDoorEvent()
 end
 
-function LockpickFinishCallback(success)
+function LockpickFinishCallback()
+    local success = exports['qb-minigames']:Lockpick(5) -- number of tries
     local vehicle = QBCore.Functions.GetClosestVehicle()
 
     local chance = math.random()
