@@ -8,7 +8,6 @@ local isCarjacking = false
 local canCarjack = true
 local AlertSend = false
 local lastPickedVehicle = nil
-local usingAdvanced = false
 local IsHotwiring = false
 local trunkclose = true
 local looped = false
