@@ -12,6 +12,16 @@ local IsHotwiring = false
 local trunkclose = true
 local looped = false
 
+local function checkImmune(vehicle)
+    local model = GetEntityModel(vehicle)
+    for i = 1, #Config.ImmuneVehicles do
+        if joaat(Config.ImmuneVehicles[i]) == model then
+            return true
+        end
+    end
+    return false
+end
+
 local function robKeyLoop()
     if looped == false then
         looped = true
@@ -22,17 +32,12 @@ local function robKeyLoop()
 
                 local ped = PlayerPedId()
                 local entering = GetVehiclePedIsTryingToEnter(ped)
-                local carIsImmune = false
                 if entering ~= 0 and not isBlacklistedVehicle(entering) then
                     sleep = 2000
                     local plate = QBCore.Functions.GetPlate(entering)
-
+                    local carIsImmune = checkImmune(entering)
                     local driver = GetPedInVehicleSeat(entering, -1)
-                    for _, veh in ipairs(Config.ImmuneVehicles) do
-                        if GetEntityModel(entering) == joaat(veh) then
-                            carIsImmune = true
-                        end
-                    end
+
                     -- Driven vehicle logic
                     if driver ~= 0 and not IsPedAPlayer(driver) and not HasKeys(plate) and not carIsImmune then
                         if IsEntityDead(driver) then
@@ -106,11 +111,8 @@ local function robKeyLoop()
                     if aiming and (target ~= nil and target ~= 0) then
                         if DoesEntityExist(target) and IsPedInAnyVehicle(target, false) and not IsEntityDead(target) and not IsPedAPlayer(target) then
                             local targetveh = GetVehiclePedIsIn(target)
-                            for _, veh in ipairs(Config.ImmuneVehicles) do
-                                if GetEntityModel(targetveh) == joaat(veh) then
-                                    carIsImmune = true
-                                end
-                            end
+                            local carIsImmune = checkImmune(targetveh)
+                            
                             if GetPedInVehicleSeat(targetveh, -1) == target and not IsBlacklistedWeapon() then
                                 local pos = GetEntityCoords(ped, true)
                                 local targetpos = GetEntityCoords(target, true)
@@ -157,11 +159,6 @@ function removeNoLockVehicles(model)
 end
 exports('removeNoLockVehicles', removeNoLockVehicles)
 
-
-
------------------------
----- Client Events ----
------------------------
 RegisterKeyMapping('togglelocks', Lang:t("info.tlock"), 'keyboard', 'L')
 RegisterCommand('togglelocks', function()
     local ped = PlayerPedId()
@@ -260,16 +257,14 @@ RegisterNetEvent('weapons:client:DrawWeapon', function()
     robKeyLoop()
 end)
 
-
 RegisterNetEvent('lockpicks:UseLockpick', function(isAdvanced)
     local ped = PlayerPedId()
     local pos = GetEntityCoords(ped)
     local vehicle = QBCore.Functions.GetClosestVehicle()
 
-    if vehicle == nil or vehicle == 0 then return end
-    if HasKeys(QBCore.Functions.GetPlate(vehicle)) then return end
-    if #(pos - GetEntityCoords(vehicle)) > 2.5 then return end
-    if GetVehicleDoorLockStatus(vehicle) <= 0 then return end
+    if vehicle == nil or vehicle == 0 or checkImmune(vehicle) or HasKeys(QBCore.Functions.GetPlate(vehicle)) or #(pos - GetEntityCoords(vehicle)) > 2.5 or GetVehicleDoorLockStatus(vehicle) <= 0 then
+        return
+    end
 
     local difficulty = isAdvanced and 'easy' or 'medium' -- Easy for advanced lockpick, medium by default
     local success = exports['qb-minigames']:Skillbar(difficulty)
@@ -300,20 +295,19 @@ RegisterNetEvent('lockpicks:UseLockpick', function(isAdvanced)
         end
     end
 end)
+
 -- Backwards Compatibility ONLY -- Remove at some point --
 RegisterNetEvent('vehiclekeys:client:SetOwner', function(plate)
     TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', plate)
 end)
 -- Backwards Compatibility ONLY -- Remove at some point --
 
------------------------
-----   Functions   ----
------------------------
 function openmenu()
     TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 0.5, "key", 0.3)
     SendNUIMessage({ casemenue = 'open' })
     SetNuiFocus(true, true)
 end
+
 function ToggleEngine(veh)
     if veh then
         local EngineOn = GetIsVehicleEngineRunning(veh)
@@ -350,7 +344,7 @@ function ToggleVehicleLockswithoutnui(veh)
                     TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 5.0, Config.LockAnimSound, 0.5)
                 end
 
-                Citizen.CreateThread(function()
+                CreateThread(function()
                     if curVeh == 0 then Wait(Config.LockToggleAnimation.WaitTime) end
                     if IsEntityPlayingAnim(ped, Config.LockToggleAnimation.AnimDict, Config.LockToggleAnimation.Anim, 3) then
                         StopAnimTask(ped, Config.LockToggleAnimation.AnimDict, Config.LockToggleAnimation.Anim, 8.0)
@@ -414,6 +408,7 @@ function loadAnimDict(dict)
         Wait(0)
     end
 end
+
 -- If in vehicle returns that, otherwise tries 3 different raycasts to get the vehicle they are facing.
 -- Raycasts picture: https://i.imgur.com/FRED0kV.png
 
@@ -554,7 +549,7 @@ function ToggleVehicleTrunk(veh)
                         trunkclose = true
                         ClearPedTasks(ped)
                     end
-			   end
+               end
             else
                 QBCore.Functions.Notify(Lang:t("notify.ydhk"), 'error')
             end
@@ -750,29 +745,26 @@ function DrawText3D(x, y, z, text)
     ClearDrawOrigin()
 end
 
------------------------
-----   NUICallback   ----
------------------------
 RegisterNUICallback('closui', function()
-	SetNuiFocus(false, false)
+    SetNuiFocus(false, false)
 end)
 
 RegisterNUICallback('unlock', function()
     ToggleVehicleunLocks(GetVehicle())
-	SetNuiFocus(false, false)
+    SetNuiFocus(false, false)
 end)
 
 RegisterNUICallback('lock', function()
     ToggleVehicleLocks(GetVehicle())
-	SetNuiFocus(false, false)
+    SetNuiFocus(false, false)
 end)
 
 RegisterNUICallback('trunk', function()
     ToggleVehicleTrunk(GetVehicle())
-	SetNuiFocus(false, false)
+    SetNuiFocus(false, false)
 end)
 
 RegisterNUICallback('engine', function()
     ToggleEngine(GetVehicle())
-	SetNuiFocus(false, false)
+    SetNuiFocus(false, false)
 end)
