@@ -8,6 +8,7 @@ Config.LockToggleAnimation = {
     PropBone = 57005,
     WaitTime = 500,
 }
+
 Config.LockAnimSound = "keys"
 Config.LockToggleSound = "lock"
 Config.LockToggleDist = 8.0
@@ -49,25 +50,25 @@ Config.PoliceNightAlertChance = 0.50 -- Chance of alerting police at night (time
 
 -- Job Settings
 Config.SharedKeys = { -- Share keys amongst employees. Employees can lock/unlock any job-listed vehicle
-    ['police'] = { -- Job name
+    police = { -- Job name
         requireOnduty = false,
         vehicles = {
-	    'police', -- Vehicle model
-	    'police2', -- Vehicle model
-	}
+            'police', -- Vehicle model
+            'police2', -- Vehicle model
+        }
     },
 
-    ['mechanic'] = {
+    mechanic = {
         requireOnduty = false,
         vehicles = {
             'towtruck',
-	}
+        }
     }
 }
 
 -- These vehicles cannot be jacked
 Config.ImmuneVehicles = {
-    'stockade'
+    'stockade',
 }
 
 -- These vehicles will never lock
@@ -75,32 +76,32 @@ Config.NoLockVehicles = {}
 
 -- These weapons cannot be used for carjacking
 Config.NoCarjackWeapons = {
-    "WEAPON_UNARMED",
-    "WEAPON_Knife",
-    "WEAPON_Nightstick",
-    "WEAPON_HAMMER",
-    "WEAPON_Bat",
-    "WEAPON_Crowbar",
-    "WEAPON_Golfclub",
-    "WEAPON_Bottle",
-    "WEAPON_Dagger",
-    "WEAPON_Hatchet",
-    "WEAPON_KnuckleDuster",
-    "WEAPON_Machete",
-    "WEAPON_Flashlight",
-    "WEAPON_SwitchBlade",
-    "WEAPON_Poolcue",
-    "WEAPON_Wrench",
-    "WEAPON_Battleaxe",
-    "WEAPON_Grenade",
-    "WEAPON_StickyBomb",
-    "WEAPON_ProximityMine",
-    "WEAPON_BZGas",
-    "WEAPON_Molotov",
-    "WEAPON_FireExtinguisher",
-    "WEAPON_PetrolCan",
-    "WEAPON_Flare",
-    "WEAPON_Ball",
-    "WEAPON_Snowball",
-    "WEAPON_SmokeGrenade",
+    [`WEAPON_UNARMED`] = true,
+    [`WEAPON_KNIFE`] = true,
+    [`WEAPON_NIGHTSTICK`] = true,
+    [`WEAPON_HAMMER`] = true,
+    [`WEAPON_BAT`] = true,
+    [`WEAPON_CROWBAR`] = true,
+    [`WEAPON_GOLFCLUB`] = true,
+    [`WEAPON_BOTTLE`] = true,
+    [`WEAPON_DAGGER`] = true,
+    [`WEAPON_HATCHET`] = true,
+    [`WEAPON_KNUCKLE`] = true,
+    [`WEAPON_MACHETE`] = true,
+    [`WEAPON_FLASHLIGHT`] = true,
+    [`WEAPON_SWITCHBLADE`] = true,
+    [`WEAPON_POOLCUE`] = true,
+    [`WEAPON_WRENCH`] = true,
+    [`WEAPON_BATTLEAXE`] = true,
+    [`WEAPON_GRENADE`] = true,
+    [`WEAPON_STICKYBOMB`] = true,
+    [`WEAPON_PROXMINE`] = true,
+    [`WEAPON_BZGAS`] = true,
+    [`WEAPON_MOLOTOV`] = true,
+    [`WEAPON_FIREEXTINGUISHER`] = true,
+    [`WEAPON_PETROLCAN`] = true,
+    [`WEAPON_FLARE`] = true,
+    [`WEAPON_BALL`] = true,
+    [`WEAPON_SNOWBALL`] = true,
+    [`WEAPON_SMOKEGRENADE`] = true,
 }
