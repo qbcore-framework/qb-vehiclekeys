@@ -189,6 +189,16 @@ local function AreKeysJobShared(veh)
     return false
 end
 
+local function isBlacklistedVehicle(vehicle)
+    local model = GetEntityModel(vehicle)
+    for _, v in ipairs(Config.NoLockVehicles) do
+        if model == joaat(v) then
+            return true
+        end
+    end
+    return Entity(vehicle).state.ignoreLocks or GetVehicleClass(vehicle) == 13
+end
+
 local function ToggleVehicleLocks(veh)
     if veh == 0 or veh == nil then return end
 
@@ -316,16 +326,6 @@ local function IsBlacklistedWeapon()
         return true
     end
     return false
-end
-
-local function isBlacklistedVehicle(vehicle)
-    local model = GetEntityModel(vehicle)
-    for _, v in ipairs(Config.NoLockVehicles) do
-        if model == joaat(v) then
-            return true
-        end
-    end
-    return Entity(vehicle).state.ignoreLocks or GetVehicleClass(vehicle) == 13
 end
 
 local function GiveKeys(id, plate)
@@ -602,14 +602,17 @@ AddEventHandler('onResourceStart', function(resourceName)
     end
 end)
 
+-- Handles state right when the player selects their character and location.
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     GetKeys()
     PlayerData = QBCore.Functions.GetPlayerData()
 end)
 
+-- Resets state on logout, in case of character change.
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
     KeysList = {}
     PlayerData = {}
+    if looped then looped = false end
 end)
 
 RegisterNetEvent('qb-vehiclekeys:client:AddKeys', function(plate)
