@@ -18,16 +18,16 @@ RegisterNetEvent('qb-vehiclekeys:server:GiveVehicleKeys', function(receiver, pla
     local giver = source
 
     if HasKeys(giver, plate) then
-        TriggerClientEvent('QBCore:Notify', giver, Lang:t("notify.vgkeys"), 'success')
+        TriggerClientEvent('QBCore:Notify', giver, Lang:t('notify.vgkeys'), 'success')
         if type(receiver) == 'table' then
-            for _,r in ipairs(receiver) do
+            for _, r in ipairs(receiver) do
                 GiveKeys(receiver[r], plate)
             end
         else
             GiveKeys(receiver, plate)
         end
     else
-        TriggerClientEvent('QBCore:Notify', giver, Lang:t("notify.ydhk"), "error")
+        TriggerClientEvent('QBCore:Notify', giver, Lang:t('notify.ydhk'), 'error')
     end
 end)
 
@@ -39,9 +39,9 @@ end)
 RegisterNetEvent('qb-vehiclekeys:server:breakLockpick', function(itemName)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
-    if not (itemName == "lockpick" or itemName == "advancedlockpick") then return end
-    if Player.Functions.RemoveItem(itemName, 1) then
-        TriggerClientEvent("inventory:client:ItemBox", source, QBCore.Shared.Items[itemName], "remove")
+    if not (itemName == 'lockpick' or itemName == 'advancedlockpick') then return end
+    if exports['qb-inventory']:RemoveItem(source, itemName, 1, false, 'qb-vehiclekeys:server:breakLockpick') then
+        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items[itemName], 'remove')
     end
 end)
 
@@ -60,7 +60,7 @@ QBCore.Functions.CreateCallback('qb-vehiclekeys:server:GetVehicleKeys', function
     if not Player then return end
     local citizenid = Player.PlayerData.citizenid
     local keysList = {}
-    for plate, citizenids in pairs (VehicleList) do
+    for plate, citizenids in pairs(VehicleList) do
         if citizenids[citizenid] then
             keysList[plate] = true
         end
@@ -98,9 +98,10 @@ function GiveKeys(id, plate)
     end
     if not VehicleList[plate] then VehicleList[plate] = {} end
     VehicleList[plate][citizenid] = true
-    TriggerClientEvent('QBCore:Notify', id, Lang:t("notify.vgetkeys"))
+    TriggerClientEvent('QBCore:Notify', id, Lang:t('notify.vgetkeys'))
     TriggerClientEvent('qb-vehiclekeys:client:AddKeys', id, plate)
 end
+
 exports('GiveKeys', GiveKeys)
 
 function RemoveKeys(id, plate)
@@ -112,6 +113,7 @@ function RemoveKeys(id, plate)
 
     TriggerClientEvent('qb-vehiclekeys:client:RemoveKeys', id, plate)
 end
+
 exports('RemoveKeys', RemoveKeys)
 
 function HasKeys(id, plate)
@@ -121,26 +123,27 @@ function HasKeys(id, plate)
     end
     return false
 end
+
 exports('HasKeys', HasKeys)
 
-QBCore.Commands.Add("givekeys", Lang:t("addcom.givekeys"), {{name = Lang:t("addcom.givekeys_id"), help = Lang:t("addcom.givekeys_id_help")}}, false, function(source, args)
-	local src = source
+QBCore.Commands.Add('givekeys', Lang:t('addcom.givekeys'), { { name = Lang:t('addcom.givekeys_id'), help = Lang:t('addcom.givekeys_id_help') } }, false, function(source, args)
+    local src = source
     TriggerClientEvent('qb-vehiclekeys:client:GiveKeys', src, tonumber(args[1]))
 end)
 
-QBCore.Commands.Add("addkeys", Lang:t("addcom.addkeys"), {{name = Lang:t("addcom.addkeys_id"), help = Lang:t("addcom.addkeys_id_help")}, {name = Lang:t("addcom.addkeys_plate"), help = Lang:t("addcom.addkeys_plate_help")}}, true, function(source, args)
-	local src = source
+QBCore.Commands.Add('addkeys', Lang:t('addcom.addkeys'), { { name = Lang:t('addcom.addkeys_id'), help = Lang:t('addcom.addkeys_id_help') }, { name = Lang:t('addcom.addkeys_plate'), help = Lang:t('addcom.addkeys_plate_help') } }, true, function(source, args)
+    local src = source
     if not args[1] or not args[2] then
-        TriggerClientEvent('QBCore:Notify', src, Lang:t("notify.fpid"))
+        TriggerClientEvent('QBCore:Notify', src, Lang:t('notify.fpid'))
         return
     end
     GiveKeys(tonumber(args[1]), args[2])
 end, 'admin')
 
-QBCore.Commands.Add("removekeys", Lang:t("addcom.rkeys"), {{name = Lang:t("addcom.rkeys_id"), help = Lang:t("addcom.rkeys_id_help")}, {name = Lang:t("addcom.rkeys_plate"), help = Lang:t("addcom.rkeys_plate_help")}}, true, function(source, args)
-	local src = source
+QBCore.Commands.Add('removekeys', Lang:t('addcom.rkeys'), { { name = Lang:t('addcom.rkeys_id'), help = Lang:t('addcom.rkeys_id_help') }, { name = Lang:t('addcom.rkeys_plate'), help = Lang:t('addcom.rkeys_plate_help') } }, true, function(source, args)
+    local src = source
     if not args[1] or not args[2] then
-        TriggerClientEvent('QBCore:Notify', src, Lang:t("notify.fpid"))
+        TriggerClientEvent('QBCore:Notify', src, Lang:t('notify.fpid'))
         return
     end
     RemoveKeys(tonumber(args[1]), args[2])
