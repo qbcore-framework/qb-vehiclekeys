@@ -1,5 +1,8 @@
 Config = {}
 
+-- Key System Settings
+Config.SaveInDB = true -- Whether the own keys should save into database
+
 -- Vehicle lock settings
 Config.LockToggleAnimation = {
     AnimDict = 'anim@mp_player_intmenu@key_fob@',
