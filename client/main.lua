@@ -208,7 +208,7 @@ RegisterNetEvent('qb-vehiclekeys:client:AddKeys', function(plate)
         local vehicle = GetVehiclePedIsIn(ped)
         local vehicleplate = QBCore.Functions.GetPlate(vehicle)
         if plate == vehicleplate then
-            SetVehicleEngineOn(vehicle, false, false, false)
+            SetVehicleEngineOn(vehicle, false, false, true)
         end
     end
 end)
