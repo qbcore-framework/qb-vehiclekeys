@@ -218,8 +218,8 @@ RegisterNetEvent('qb-vehiclekeys:client:RemoveKeys', function(plate)
 end)
 
 RegisterNetEvent('qb-vehiclekeys:client:ToggleEngine', function()
-    local EngineOn = GetIsVehicleEngineRunning(GetVehiclePedIsIn(PlayerPedId()))
     local vehicle = GetVehiclePedIsIn(PlayerPedId(), true)
+    local EngineOn = GetIsVehicleEngineRunning(vehicle)
     if HasKeys(QBCore.Functions.GetPlate(vehicle)) then
         if EngineOn then
             SetVehicleEngineOn(vehicle, false, false, true)
@@ -776,4 +776,23 @@ end)
 RegisterNUICallback('engine', function()
     ToggleEngine(GetVehicle())
     SetNuiFocus(false, false)
+end)
+
+-- New function to disable vehicle controls when the engine is off
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+        local playerPed = PlayerPedId()
+        local vehicle = GetVehiclePedIsIn(playerPed, false)
+
+        if vehicle and GetPedInVehicleSeat(vehicle, -1) == playerPed then
+            if not GetIsVehicleEngineRunning(vehicle) then
+                -- Disable controls if the engine is off
+                DisableControlAction(0, 71, true) -- Disable acceleration
+                DisableControlAction(0, 72, true) -- Disable braking
+                DisableControlAction(0, 63, true) -- Disable left turn
+                DisableControlAction(0, 64, true) -- Disable right turn
+            end
+        end
+    end
 end)
