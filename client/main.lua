@@ -254,8 +254,10 @@ RegisterNetEvent('qb-vehiclekeys:client:GiveKeys', function(id)
     end
 end)
 
-RegisterNetEvent('QBCore:Client:EnteringVehicle', function()
-    robKeyLoop()
+RegisterNetEvent('QBCore:Client:VehicleInfo', function(data)
+    if data.event == 'Entering' then
+        robKeyLoop()
+    end
 end)
 
 RegisterNetEvent('qb-weapons:client:DrawWeapon', function()
