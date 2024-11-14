@@ -51,7 +51,7 @@ end)
 
 QBCore.Functions.CreateCallback('qb-vehiclekeys:server:GetVehicleKeys', function(source, cb)
     local Player = QBCore.Functions.GetPlayer(source)
-    if not Player then return end
+    if not Player then return cb({}) end
     local citizenid = Player.PlayerData.citizenid
     local keysList = {}
     for plate, citizenids in pairs(VehicleList) do
