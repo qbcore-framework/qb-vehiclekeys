@@ -211,12 +211,10 @@ RegisterNetEvent('qb-vehiclekeys:client:AddKeys', function(plate)
             SetVehicleEngineOn(vehicle, false, false, false)
         end
     end
-    if Config.SaveInDB then TriggerServerEvent("qb-vehiclekeys:server:synckeys", KeysList) end
 end)
 
 RegisterNetEvent('qb-vehiclekeys:client:RemoveKeys', function(plate)
     KeysList[plate] = nil
-    if Config.SaveInDB then TriggerServerEvent("qb-vehiclekeys:server:synckeys", KeysList) end
 end)
 
 RegisterNetEvent('qb-vehiclekeys:client:ToggleEngine', function()
