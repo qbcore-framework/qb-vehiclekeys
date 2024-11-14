@@ -1,7 +1,7 @@
 Config = {}
 
 -- Key System Settings
-Config.SaveInDB = true -- Whether the own keys should save into database
+Config.PersistentKeys = true -- Whether the own keys should save into database or not
 
 -- Vehicle lock settings
 Config.LockToggleAnimation = {
