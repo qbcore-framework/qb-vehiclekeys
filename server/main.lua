@@ -132,10 +132,8 @@ function HasKeys(id, plate)
         return true
     end
 
-    if Player.PlayerData.metadata["vehicleKeys"] and Config.PersistentKeys then
-        if Player.PlayerData.metadata["vehicleKeys"][plate] then
-            return true
-        end
+    if Player.PlayerData.metadata["vehicleKeys"] and Config.PersistentKeys and Player.PlayerData.metadata["vehicleKeys"][plate] then
+        return true
     end
 
     return false
