@@ -49,12 +49,6 @@ RegisterNetEvent('qb-vehiclekeys:server:setVehLockState', function(vehNetId, sta
     SetVehicleDoorsLocked(NetworkGetEntityFromNetworkId(vehNetId), state)
 end)
 
-RegisterServerEvent("qb-vehiclekeys:server:synckeys", function(KeyList)
-    if not Config.SaveInDB then return end
-    local Player = QBCore.Functions.GetPlayer(source)
-    Player.Functions.SetMetaData("VehKeys", KeyList)
-end)
-
 QBCore.Functions.CreateCallback('qb-vehiclekeys:server:GetVehicleKeys', function(source, cb)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return end
