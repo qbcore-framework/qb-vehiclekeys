@@ -66,7 +66,7 @@ QBCore.Functions.CreateCallback('qb-vehiclekeys:server:GetVehicleKeys', function
         end
     end
     if Player.PlayerData.metadata["vehicleKeys"] and Config.PersistentKeys then
-        for plate, value in Player.PlayerData.metadata["vehicleKeys"] do
+        for plate in pairs(Player.PlayerData.metadata["vehicleKeys"]) do
             keysList[plate] = true
         end
     end
