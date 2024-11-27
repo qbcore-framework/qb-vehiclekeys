@@ -51,11 +51,16 @@ end)
 
 QBCore.Functions.CreateCallback('qb-vehiclekeys:server:GetVehicleKeys', function(source, cb)
     local Player = QBCore.Functions.GetPlayer(source)
-    if not Player then return end
+    if not Player then return cb({}) end
     local citizenid = Player.PlayerData.citizenid
     local keysList = {}
     for plate, citizenids in pairs(VehicleList) do
         if citizenids[citizenid] then
+            keysList[plate] = true
+        end
+    end
+    if Player.PlayerData.metadata["vehicleKeys"] and Config.PersistentKeys then
+        for plate in pairs(Player.PlayerData.metadata["vehicleKeys"]) do
             keysList[plate] = true
         end
     end
@@ -78,6 +83,7 @@ function GiveKeys(id, plate)
     local Player = QBCore.Functions.GetPlayer(id)
     if not Player then return end
     local citizenid = Player.PlayerData.citizenid
+
     if not plate then
         if GetVehiclePedIsIn(GetPlayerPed(id), false) ~= 0 then
             plate = QBCore.Shared.Trim(GetVehicleNumberPlateText(GetVehiclePedIsIn(GetPlayerPed(id), false)))
@@ -85,8 +91,14 @@ function GiveKeys(id, plate)
             return
         end
     end
+
     if not VehicleList[plate] then VehicleList[plate] = {} end
     VehicleList[plate][citizenid] = true
+
+    local oldKeys = Player.PlayerData.metadata["vehicleKeys"] or {}
+    oldKeys[plate] = true
+    Player.Functions.SetMetaData("vehicleKeys", oldKeys)
+
     TriggerClientEvent('QBCore:Notify', id, Lang:t('notify.vgetkeys'))
     TriggerClientEvent('qb-vehiclekeys:client:AddKeys', id, plate)
 end
@@ -94,11 +106,17 @@ end
 exports('GiveKeys', GiveKeys)
 
 function RemoveKeys(id, plate)
-    local citizenid = QBCore.Functions.GetPlayer(id).PlayerData.citizenid
+    local Player = QBCore.Functions.GetPlayer(id)
+    if not Player then return end
+    local citizenid = Player.PlayerData.citizenid
 
     if VehicleList[plate] and VehicleList[plate][citizenid] then
         VehicleList[plate][citizenid] = nil
     end
+
+    local oldKeys = Player.PlayerData.metadata["vehicleKeys"] or {}
+    oldKeys[plate] = nil
+    Player.Functions.SetMetaData("vehicleKeys", oldKeys)
 
     TriggerClientEvent('qb-vehiclekeys:client:RemoveKeys', id, plate)
 end
@@ -106,10 +124,18 @@ end
 exports('RemoveKeys', RemoveKeys)
 
 function HasKeys(id, plate)
-    local citizenid = QBCore.Functions.GetPlayer(id).PlayerData.citizenid
+    local Player = QBCore.Functions.GetPlayer(id)
+    if not Player then return false end
+    local citizenid = Player.PlayerData.citizenid
+
     if VehicleList[plate] and VehicleList[plate][citizenid] then
         return true
     end
+
+    if Player.PlayerData.metadata["vehicleKeys"] and Config.PersistentKeys and Player.PlayerData.metadata["vehicleKeys"][plate] then
+        return true
+    end
+
     return false
 end
 
