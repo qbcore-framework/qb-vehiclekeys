@@ -26,17 +26,19 @@ Config.RemoveLockpickAdvanced = 0.2 -- Chance to remove advanced lockpick on fai
 Config.CarJackEnable = true -- True allows for the ability to car jack peds.
 Config.CarjackingTime = 7500 -- How long it takes to carjack
 Config.DelayBetweenCarjackings = 10000 -- Time before you can carjack again
+Config.PedDefenseChance = 0.6 -- Probability (0-1) that a ped will defend themselves
+Config.PedAccuracy = 50 -- How accurate the ped's shooting will be (1-100)
 Config.CarjackChance = {
     ['2685387236'] = 0.0, -- melee
-    ['416676503'] = 0.5, -- handguns
-    ['-957766203'] = 0.75, -- SMG
-    ['860033945'] = 0.90, -- shotgun
-    ['970310034'] = 0.90, -- assault
-    ['1159398588'] = 0.99, -- LMG
-    ['3082541095'] = 0.99, -- sniper
-    ['2725924767'] = 0.99, -- heavy
+    ['416676503'] = 100, -- handguns
+    ['-957766203'] = 75.00, -- SMG
+    ['860033945'] = 75.00, -- shotgun
+    ['970310034'] = 0.75, -- assault
+    ['1159398588'] = 0.80, -- LMG
+    ['3082541095'] = 65.00, -- sniper
+    ['2725924767'] = 65.00, -- heavy
     ['1548507267'] = 0.0, -- throwable
-    ['4257178988'] = 0.0, -- misc
+    ['4257178988'] = 50.0, -- misc
 }
 
 -- Hotwire Settings
