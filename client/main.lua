@@ -252,10 +252,8 @@ RegisterNetEvent('qb-vehiclekeys:client:GiveKeys', function(id)
     end
 end)
 
-RegisterNetEvent('QBCore:Client:VehicleInfo', function(data)
-    if data.event == 'Entering' then
-        robKeyLoop()
-    end
+RegisterNetEvent('QBCore:Client:EnteringVehicle', function()
+    robKeyLoop()
 end)
 
 RegisterNetEvent('qb-weapons:client:DrawWeapon', function()
@@ -642,7 +640,7 @@ function CarjackVehicle(target)
     isCarjacking = true
     canCarjack = false
     loadAnimDict('mp_am_hold_up')
-    local vehicle = GetVehiclePedIsUsing(target)
+    local vehicle = GetVehiclePedIsIn(target, false)
     local occupants = GetPedsInVehicle(vehicle)
     for p = 1, #occupants do
         local ped = occupants[p]
@@ -676,22 +674,50 @@ function CarjackVehicle(target)
                 carjackChance = 0.5
             end
             if math.random() <= carjackChance then
-                local plate = QBCore.Functions.GetPlate(vehicle)
-                for p = 1, #occupants do
-                    local ped = occupants[p]
+                -- Check if ped fights back
+                if math.random() <= Config.PedDefenseChance then
+                    -- Make the ped defend themselves
+                    local plate = QBCore.Functions.GetPlate(vehicle)
                     CreateThread(function()
                         FreezeEntityPosition(vehicle, false)
                         SetVehicleUndriveable(vehicle, false)
-                        TaskLeaveVehicle(ped, vehicle, 0)
-                        PlayPain(ped, 6, 0)
+                        
+                        -- Setup combat attributes
+                        GiveWeaponToPed(target, `WEAPON_PISTOL`, 255, false, true)
+                        SetPedCombatAttributes(target, 46, true)
+                        SetPedFleeAttributes(target, 0, false)
+                        SetPedCombatRange(target, 2)
+                        SetPedCombatMovement(target, 2)
+                        SetPedAccuracy(target, Config.PedAccuracy)
+                        
+                        -- Make them exit and attack
+                        TaskLeaveVehicle(target, vehicle, 0)
                         Wait(1250)
-                        ClearPedTasksImmediately(ped)
-                        PlayPain(ped, math.random(7, 8), 0)
-                        MakePedFlee(ped)
+                        ClearPedTasksImmediately(target)
+                        TaskCombatPed(target, PlayerPedId(), 0, 16)
+                        
+                        QBCore.Functions.Notify('The driver is fighting back!', 'error')
+                        TriggerServerEvent('hud:server:GainStress', math.random(2, 6))
                     end)
+                else
+                    -- Normal success behavior
+                    local plate = QBCore.Functions.GetPlate(vehicle)
+                    for p = 1, #occupants do
+                        local ped = occupants[p]
+                        CreateThread(function()
+                            FreezeEntityPosition(vehicle, false)
+                            SetVehicleUndriveable(vehicle, false)
+                            TaskLeaveVehicle(ped, vehicle, 0)
+                            PlayPain(ped, 6, 0)
+                            Wait(1250)
+                            ClearPedTasksImmediately(ped)
+                            PlayPain(ped, math.random(7, 8), 0)
+                            MakePedFlee(ped)
+                        end)
+                    end
+                    TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
+                    TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', plate)
                 end
-                TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
-                TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', plate)
             else
                 QBCore.Functions.Notify(Lang:t('notify.cjackfail'), 'error')
                 FreezeEntityPosition(vehicle, false)
@@ -712,6 +738,40 @@ function CarjackVehicle(target)
         canCarjack = true
     end)
 end
+
+-- Continuous check for aiming at vehicles
+CreateThread(function()
+    while true do
+        if Config.CarJackEnable and canCarjack then
+            local playerid = PlayerId()
+            local aiming, target = GetEntityPlayerIsFreeAimingAt(playerid)
+            
+            if aiming and target ~= nil and target ~= 0 then
+                if DoesEntityExist(target) and IsPedInAnyVehicle(target, false) and not IsEntityDead(target) and not IsPedAPlayer(target) then
+                    local targetveh = GetVehiclePedIsIn(target)
+                    local carIsImmune = false
+                    
+                    for _, veh in ipairs(Config.ImmuneVehicles) do
+                        if GetEntityModel(targetveh) == joaat(veh) then
+                            carIsImmune = true
+                            break
+                        end
+                    end
+                    
+                    if not IsBlacklistedWeapon() and not carIsImmune then
+                        local pos = GetEntityCoords(PlayerPedId(), true)
+                        local targetpos = GetEntityCoords(target, true)
+                        
+                        if #(pos - targetpos) < 5.0 then
+                            CarjackVehicle(target)
+                        end
+                    end
+                end
+            end
+        end
+        Wait(100)
+    end
+end)
 
 function AttemptPoliceAlert(type)
     if not AlertSend then
@@ -752,7 +812,6 @@ function DrawText3D(x, y, z, text)
     DrawRect(0.0, 0.0 + 0.0125, 0.017 + factor, 0.03, 0, 0, 0, 75)
     ClearDrawOrigin()
 end
-
 -----------------------
 ----   NUICallback   ----
 -----------------------
