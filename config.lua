@@ -29,16 +29,16 @@ Config.DelayBetweenCarjackings = 10000 -- Time before you can carjack again
 Config.PedDefenseChance = 0.6 -- Probability (0-1) that a ped will defend themselves
 Config.PedAccuracy = 50 -- How accurate the ped's shooting will be (1-100)
 Config.CarjackChance = {
-    ['2685387236'] = 0.0, -- melee
+    ['2685387236'] = 0, -- melee
     ['416676503'] = 100, -- handguns
-    ['-957766203'] = 75.00, -- SMG
-    ['860033945'] = 75.00, -- shotgun
-    ['970310034'] = 0.75, -- assault
-    ['1159398588'] = 0.80, -- LMG
-    ['3082541095'] = 65.00, -- sniper
-    ['2725924767'] = 65.00, -- heavy
-    ['1548507267'] = 0.0, -- throwable
-    ['4257178988'] = 50.0, -- misc
+    ['-957766203'] = 75, -- SMG
+    ['860033945'] = 75, -- shotgun
+    ['970310034'] = 75, -- assault
+    ['1159398588'] = 80, -- LMG
+    ['3082541095'] = 65, -- sniper
+    ['2725924767'] = 65, -- heavy
+    ['1548507267'] = 0, -- throwable
+    ['4257178988'] = 50, -- misc
 }
 
 -- Hotwire Settings
