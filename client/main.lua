@@ -66,7 +66,7 @@ local function robKeyLoop()
                                 end
                             end
                         end
-                        -- Parked car logic
+                    -- Parked car logic
                     elseif driver == 0 and entering ~= lastPickedVehicle and not HasKeys(plate) and not isTakingKeys then
                         QBCore.Functions.TriggerCallback('qb-vehiclekeys:server:checkPlayerOwned', function(playerOwned)
                             if not playerOwned then
@@ -254,13 +254,34 @@ end)
 
 RegisterNetEvent('QBCore:Client:VehicleInfo', function(data)
     if data.event == 'Entering' then
-        robKeyLoop()
+        -- Handle vehicle entry attempt
+        local ped = PlayerPedId()
+        local entering = GetVehiclePedIsTryingToEnter(ped)
+        if entering ~= 0 and not isBlacklistedVehicle(entering) then
+            local plate = QBCore.Functions.GetPlate(entering)
+            local driver = GetPedInVehicleSeat(entering, -1)
+            
+            if driver ~= 0 and not IsPedAPlayer(driver) and not HasKeys(plate) then
+                if IsEntityDead(driver) then
+                    if not isTakingKeys then
+                        isTakingKeys = true
+                        TriggerServerEvent('qb-vehiclekeys:server:setVehLockState', NetworkGetNetworkIdFromEntity(entering), 1)
+                        QBCore.Functions.Progressbar('steal_keys', Lang:t('progress.takekeys'), 2500, false, false, {
+                            disableMovement = false,
+                            disableCarMovement = true,
+                            disableMouse = false,
+                            disableCombat = true
+                        }, {}, {}, {}, function() -- Done
+                            TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', plate)
+                            isTakingKeys = false
+                        end, function()
+                            isTakingKeys = false
+                        end)
+                    end
+                end
+            end
+        end
     end
-end)
-
-RegisterNetEvent('qb-weapons:client:DrawWeapon', function()
-    Wait(2000)
-    robKeyLoop()
 end)
 
 RegisterNetEvent('lockpicks:UseLockpick', function(isAdvanced)
@@ -618,7 +639,7 @@ function Hotwire(vehicle, plate)
         anim = 'machinic_loop_mechandplayer',
         flags = 16
     }, {}, {}, function() -- Done
-        StopAnimTask(ped, 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@', 'machinic_loop_mechandplayer', 1.0)
+            StopAnimTask(ped, 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@', 'machinic_loop_mechandplayer', 1.0)
         TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
         if (math.random() <= Config.HotwireChance) then
             TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', plate)
@@ -642,7 +663,7 @@ function CarjackVehicle(target)
     isCarjacking = true
     canCarjack = false
     loadAnimDict('mp_am_hold_up')
-    local vehicle = GetVehiclePedIsUsing(target)
+    local vehicle = GetVehiclePedIsIn(target, false)
     local occupants = GetPedsInVehicle(vehicle)
     for p = 1, #occupants do
         local ped = occupants[p]
@@ -654,7 +675,7 @@ function CarjackVehicle(target)
         end)
         Wait(math.random(200, 500))
     end
-    -- Cancel progress bar if: Ped dies during robbery, car gets too far away
+-- Cancel progress bar if: Ped dies during robbery, car gets too far away
     CreateThread(function()
         while isCarjacking do
             local distance = #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(target))
@@ -676,22 +697,50 @@ function CarjackVehicle(target)
                 carjackChance = 0.5
             end
             if math.random() <= carjackChance then
-                local plate = QBCore.Functions.GetPlate(vehicle)
-                for p = 1, #occupants do
-                    local ped = occupants[p]
+                -- Check if ped fights back
+                if math.random() <= Config.PedDefenseChance then
+                    -- Make the ped defend themselves
+                    local plate = QBCore.Functions.GetPlate(vehicle)
                     CreateThread(function()
                         FreezeEntityPosition(vehicle, false)
                         SetVehicleUndriveable(vehicle, false)
-                        TaskLeaveVehicle(ped, vehicle, 0)
-                        PlayPain(ped, 6, 0)
+                        
+                        -- Setup combat attributes
+                        GiveWeaponToPed(target, `WEAPON_PISTOL`, 255, false, true)
+                        SetPedCombatAttributes(target, 46, true)
+                        SetPedFleeAttributes(target, 0, false)
+                        SetPedCombatRange(target, 2)
+                        SetPedCombatMovement(target, 2)
+                        SetPedAccuracy(target, Config.PedAccuracy)
+                        
+                        -- Make them exit and attack
+                        TaskLeaveVehicle(target, vehicle, 0)
                         Wait(1250)
-                        ClearPedTasksImmediately(ped)
-                        PlayPain(ped, math.random(7, 8), 0)
-                        MakePedFlee(ped)
+                        ClearPedTasksImmediately(target)
+                        TaskCombatPed(target, PlayerPedId(), 0, 16)
+                        
+                        QBCore.Functions.Notify('The driver is fighting back!', 'error')
+                        TriggerServerEvent('hud:server:GainStress', math.random(2, 6))
                     end)
+                    else
+                    -- Normal success behavior
+                    local plate = QBCore.Functions.GetPlate(vehicle)
+                    for p = 1, #occupants do
+                        local ped = occupants[p]
+                        CreateThread(function()
+                            FreezeEntityPosition(vehicle, false)
+                            SetVehicleUndriveable(vehicle, false)
+                            TaskLeaveVehicle(ped, vehicle, 0)
+                            PlayPain(ped, 6, 0)
+                            Wait(1250)
+                            ClearPedTasksImmediately(ped)
+                            PlayPain(ped, math.random(7, 8), 0)
+                            MakePedFlee(ped)
+                        end)
+                    end
+                    TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
+                    TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', plate)
                 end
-                TriggerServerEvent('hud:server:GainStress', math.random(1, 4))
-                TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', plate)
             else
                 QBCore.Functions.Notify(Lang:t('notify.cjackfail'), 'error')
                 FreezeEntityPosition(vehicle, false)
